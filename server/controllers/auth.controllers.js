@@ -27,7 +27,16 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { email, password, role } = req.body;
+  const {
+    email,
+    password,
+    role,
+    name,
+    department,
+    bio,
+    profilePicture,
+    interests,
+  } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -42,6 +51,11 @@ const register = async (req, res) => {
       password: hashedPassword,
       role,
       username: newUsername,
+      name,
+      department,
+      bio,
+      profilePicture,
+      interests,
     });
 
     await user.save();

@@ -17,6 +17,10 @@ const resourceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    uploadId: {
+      type: String,
+      required: true,
+    },
     tags: [
       {
         type: mongoose.Schema.Types.ObjectId,

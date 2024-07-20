@@ -1,9 +1,42 @@
-import cloudinary from "cloudinary";
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
 
-cloudinary.v2.config({
-  cloud_name: "dcennwifb",
-  api_key: "819944886548216",
-  api_secret: "Gj84tkawSL9PKagYm6fJ0kehfN4",
-});
+const uploadResourcesToCloudinary = (req, buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.v2.uploader.upload_stream(
+      {
+        folder: `resources/${req.user.id}`,
+        public_id: `${Date.now()}_${req.file.originalname.split(".")[0]}`,
+      },
+      (error, result) => {
+        if (result) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
 
-export default cloudinary;
+const uploadProfilePicturesToCloudinary = (req, buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.v2.uploader.upload_stream(
+      {
+        folder: "userProfiles",
+        public_id: `${req.user.id}_profile`,
+      },
+      (error, result) => {
+        if (result) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
+
+export { uploadResourcesToCloudinary, uploadProfilePicturesToCloudinary };

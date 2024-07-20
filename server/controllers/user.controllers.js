@@ -1,7 +1,6 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
-import cloudinary from "../utils/cloudinary.js";
-import streamifier from "streamifier";
+import { uploadProfilePicturesToCloudinary } from "../utils/cloudinary.js";
 
 // Controllers for user profile management, not by admin
 // Get user profile
@@ -156,28 +155,8 @@ const updateUserProfilePic = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Function to upload buffer to Cloudinary
-    const uploadToCloudinary = (buffer) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.v2.uploader.upload_stream(
-          {
-            folder: "userProfiles",
-            public_id: `${req.user.id}_${Date.now()}_profile`,
-          },
-          (error, result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(error);
-            }
-          }
-        );
-        streamifier.createReadStream(buffer).pipe(stream);
-      });
-    };
-
     // Upload the file to Cloudinary
-    const result = await uploadToCloudinary(req.file.buffer);
+    const result = await uploadProfilePicturesToCloudinary(req.file.buffer);
 
     // Update the user's profile picture URL
     user.profilePicture = result.secure_url;

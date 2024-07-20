@@ -13,7 +13,7 @@ const authenticateJWT = (req, res, next) => {
   jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
     if (error) {
       console.log("Error in auth");
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: "No access" });
     }
 
     req.user = user;
