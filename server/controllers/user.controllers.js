@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
+import streamifier from "streamifier";
 
 // Controllers for user profile management, not by admin
 // Get user profile
@@ -144,23 +145,48 @@ const deleteUser = async (req, res) => {
 // New route for profile updation, using multer and cloudinary
 const updateUserProfilePic = async (req, res) => {
   try {
+    // Find the user by ID
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const result = await cloudinary.v2.uploader.upload(req.file.path, {
-      folder: "/userProfiles",
-      // Rename the file
-      public_id: `${req.user.id}_${Date.now()}_profile`,
-    });
+    // Ensure that a file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
 
+    // Function to upload buffer to Cloudinary
+    const uploadToCloudinary = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "userProfiles",
+            public_id: `${req.user.id}_${Date.now()}_profile`,
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+        streamifier.createReadStream(buffer).pipe(stream);
+      });
+    };
+
+    // Upload the file to Cloudinary
+    const result = await uploadToCloudinary(req.file.buffer);
+
+    // Update the user's profile picture URL
     user.profilePicture = result.secure_url;
-
     await user.save();
 
+    // Send a success response
     res.status(200).json({ message: "Profile picture updated" });
   } catch (error) {
+    // Handle errors
     res.status(500).json({ message: error.message });
   }
 };
