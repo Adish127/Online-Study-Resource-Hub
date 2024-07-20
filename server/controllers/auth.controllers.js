@@ -27,7 +27,7 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -36,7 +36,13 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const newUsername = `user${Math.floor(Math.random() * 1000000)}`;
+    const user = new User({
+      email,
+      password: hashedPassword,
+      role,
+      username: newUsername,
+    });
 
     await user.save();
 
@@ -49,6 +55,8 @@ const register = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        username: user.username,
+        role: user.role,
       },
     });
   } catch (error) {

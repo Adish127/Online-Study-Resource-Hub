@@ -1,10 +1,14 @@
+// Import necessary modules
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import connectDB from "./config/db.js";
+// Import configs
+import connectDB from "./utils/db.js";
 
+// Import routes
 import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 dotenv.config();
 
@@ -16,8 +20,9 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
-// API Routes
+// API Endpoints
 app.use("/api/auth", authRoutes);
+app.use("/api/v2/users", userRoutes);
 
 connectDB(process.env.MONGO_URI)
   .then(() => {
