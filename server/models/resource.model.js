@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema(
   {
-    title: {
+    fileName: {
       type: String,
       required: true,
     },

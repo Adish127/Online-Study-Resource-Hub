@@ -9,6 +9,7 @@ import connectDB from "./utils/db.js";
 // Import routes
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import resourceRoutes from "./routes/resource.routes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 // API Endpoints
 app.use("/api/auth", authRoutes);
 app.use("/api/v2/users", userRoutes);
+app.use("/api/v2/resources", resourceRoutes);
 
 connectDB(process.env.MONGO_URI)
   .then(() => {
