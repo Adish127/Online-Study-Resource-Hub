@@ -26,17 +26,8 @@ const login = async (req, res) => {
   }
 };
 
-const register = async (req, res) => {
-  const {
-    email,
-    password,
-    role,
-    name,
-    department,
-    bio,
-    profilePicture,
-    interests,
-  } = req.body;
+const initialRegister = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -45,17 +36,10 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const newUsername = `user${Math.floor(Math.random() * 1000000)}`;
     const user = new User({
       email,
       password: hashedPassword,
-      role,
-      username: newUsername,
-      name,
-      department,
-      bio,
-      profilePicture,
-      interests,
+      username: `user${Math.floor(Math.random() * 1000000)}`,
     });
 
     await user.save();
@@ -66,16 +50,43 @@ const register = async (req, res) => {
 
     res.status(200).json({
       token,
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-      },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export { login, register };
+const completeRegistration = async (req, res) => {
+  const { name, role, department, bio, profilePicture, interests } = req.body;
+  console.log(req);
+
+  try {
+    const user = await User.findById(req.user.id);
+    console.log(req.user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        name,
+        role,
+        department,
+        bio,
+        profilePicture,
+        interests,
+        isProfileComplete: true,
+      },
+      { new: true }
+    );
+    console.log(updatedUser);
+
+    res.status(200).json({ message: "Profile updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+export { login, initialRegister, completeRegistration };

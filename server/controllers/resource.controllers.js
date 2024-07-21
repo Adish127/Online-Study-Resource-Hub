@@ -48,7 +48,16 @@ const deleteResource = async (req, res) => {
 };
 
 // For user
-// update resource file, delete their resource file
+// browse resources, update resource file, delete their resource file
+const browseResources = async (req, res) => {
+  try {
+    const resources = await Resource.find();
+    res.status(200).json(resources);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateResourceFile = async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id);
@@ -254,6 +263,7 @@ export {
   getResources,
   getResource,
   deleteResource,
+  browseResources,
   updateResourceFile,
   deleteResourceFile,
   createResource,

@@ -9,6 +9,7 @@ import {
   createResource,
   searchAndFilterResources,
   manageResourceAccess,
+  browseResources,
 } from "../controllers/resource.controllers.js";
 import { authenticateJWT, verifyAdmin } from "../middlewares/auth.js";
 import upload from "../middlewares/multer.js";
@@ -19,6 +20,7 @@ router.route("/").get(authenticateJWT, verifyAdmin, getResources);
 router.route("/:id").get(authenticateJWT, verifyAdmin, getResource);
 router.route("/:id").delete(authenticateJWT, verifyAdmin, deleteResource);
 
+router.route("/browse").post(authenticateJWT, browseResources);
 router
   .route("/upload")
   .post(authenticateJWT, upload.single("file"), createResource);

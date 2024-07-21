@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    isProfileComplete: { type: Boolean, default: false },
     uploadedResources: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -53,8 +54,9 @@ const userSchema = new mongoose.Schema(
     ],
     interests: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tag",
+        // type: mongoose.Schema.Types.ObjectId,
+        // ref: "Tag",
+        type: String,
       },
     ],
   },
