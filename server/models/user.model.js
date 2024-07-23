@@ -31,7 +31,8 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default: "",
+      default:
+        "https://res.cloudinary.com/dcennwifb/image/upload/v1721563699/default-avatar_h2rbwj.jpg",
     },
     isProfileComplete: { type: Boolean, default: false },
     uploadedResources: [
