@@ -257,6 +257,37 @@ const manageResourceAccess = async (req, res) => {
   }
 };
 
+// Controller for liking a resource
+const likeResource = async (req, res) => {
+  try {
+    const resource = await Resource.findById(req.params.id);
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    const currentUser = await User.findById(req.user.id);
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (resource.likes.includes(currentUser._id)) {
+      return res.status(400).json({ message: "Resource already liked" });
+    }
+
+    await Resource.findByIdAndUpdate(
+      resource._id,
+      { $push: { likes: currentUser._id } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Resource liked" });
+
+    // Add notification logic
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // const assignResource = async (req, res) => {};
 
 export {
@@ -269,4 +300,5 @@ export {
   createResource,
   searchAndFilterResources,
   manageResourceAccess,
+  likeResource,
 };

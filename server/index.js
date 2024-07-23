@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import resourceRoutes from "./routes/resource.routes.js";
 import tagRoutes from "./routes/tag.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/v2/users", userRoutes);
 app.use("/api/v2/resources", resourceRoutes);
 app.use("/api/v2/tags", tagRoutes);
+app.use("/api/v2/comments", commentRoutes);
 
 connectDB(process.env.MONGO_URI)
   .then(() => {
