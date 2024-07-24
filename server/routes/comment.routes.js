@@ -12,3 +12,5 @@ const router = express.Router();
 router.route("/:id").post(authenticateJWT, addComment);
 router.route("/:id").get(authenticateJWT, displayComments);
 router.route("/delete/:id").delete(authenticateJWT, deleteComment);
+
+export default router;

@@ -2,6 +2,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import passport from "./config/auth.js";
 
 // Import configs
 import connectDB from "./config/db.js";
@@ -23,6 +24,8 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(passport.initialize());
+
 // API Endpoints
 app.use("/api/auth", authRoutes);
 app.use("/api/v2/users", userRoutes);
@@ -30,12 +33,16 @@ app.use("/api/v2/resources", resourceRoutes);
 app.use("/api/v2/tags", tagRoutes);
 app.use("/api/v2/comments", commentRoutes);
 
-connectDB(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(`Server is running on PORT ${process.env.PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.log(error, "MongoDB failed to connect");
-  });
+// connectDB(process.env.MONGO_URI)
+//   .then(() => {
+//     app.listen(process.env.PORT, () => {
+//       console.log(`Server is running on PORT ${process.env.PORT}`);
+//     });
+//   })
+//   .catch((error) => {
+//     console.log(error, "MongoDB failed to connect");
+//   });
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on PORT ${process.env.PORT}`);
+});

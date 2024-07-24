@@ -5,9 +5,26 @@ import {
   completeRegistration,
 } from "../controllers/auth.controllers.js";
 
+import passport from "passport";
+
 import { authenticateJWT } from "../middlewares/auth.js";
 
 const router = express.Router();
+
+router
+  .route("/google")
+  .get(passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.route("/google/callback").get(
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    // console.log(req.user);
+    res.redirect("http://localhost:3000");
+  }
+);
 
 router.route("/login").post(login);
 router

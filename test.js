@@ -1,3 +1,0 @@
-const square = () => {
-  return "square";
-};
