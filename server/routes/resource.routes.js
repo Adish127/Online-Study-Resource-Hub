@@ -21,7 +21,7 @@ router.route("/").get(authenticateJWT, verifyAdmin, getResources);
 router.route("/:id").get(authenticateJWT, verifyAdmin, getResource);
 router.route("/:id").delete(authenticateJWT, verifyAdmin, deleteResource);
 
-router.route("/browse").post(authenticateJWT, browseResources);
+router.route("/browse").get(authenticateJWT, browseResources);
 router
   .route("/upload")
   .post(authenticateJWT, upload.single("file"), createResource);

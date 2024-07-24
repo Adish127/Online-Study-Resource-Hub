@@ -61,7 +61,7 @@ const browseResources = async (req, res) => {
 const updateResourceFile = async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id);
-    console.log(currentUser);
+    // console.log(currentUser);
 
     if (!currentUser) {
       return res.status(404).json({ message: "User not found" });
@@ -86,7 +86,7 @@ const updateResourceFile = async (req, res) => {
       fileName: currentResource.fileName,
     };
 
-    console.log(file);
+    // console.log(file);
     if (file) {
       if (file.originalname !== currentResource.fileName) {
         await cloudinary.v2.uploader.destroy(currentResource.uploadId);

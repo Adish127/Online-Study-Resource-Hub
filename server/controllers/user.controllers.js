@@ -109,7 +109,7 @@ const updateUser = async (req, res) => {
       updateFields.password = await bcryptjs.hash(updateFields.password, 10);
     }
 
-    console.log(updateFields);
+    // console.log(updateFields);
 
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,

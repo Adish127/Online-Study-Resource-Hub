@@ -33,16 +33,16 @@ app.use("/api/v2/resources", resourceRoutes);
 app.use("/api/v2/tags", tagRoutes);
 app.use("/api/v2/comments", commentRoutes);
 
-// connectDB(process.env.MONGO_URI)
-//   .then(() => {
-//     app.listen(process.env.PORT, () => {
-//       console.log(`Server is running on PORT ${process.env.PORT}`);
-//     });
-//   })
-//   .catch((error) => {
-//     console.log(error, "MongoDB failed to connect");
-//   });
+connectDB(process.env.MONGO_URI)
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`Server is running on PORT ${process.env.PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error, "MongoDB failed to connect");
+  });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on PORT ${process.env.PORT}`);
-});
+// app.listen(process.env.PORT, () => {
+//   console.log(`Server is running on PORT ${process.env.PORT}`);
+// });

@@ -24,7 +24,7 @@ const uploadProfilePicturesToCloudinary = (req, buffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.v2.uploader.upload_stream(
       {
-        folder: "userProfiles",
+        folder: `userProfiles/${req.user.id}`,
         public_id: `${req.user.id}_profile`,
       },
       (error, result) => {

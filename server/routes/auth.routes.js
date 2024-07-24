@@ -6,6 +6,7 @@ import {
 } from "../controllers/auth.controllers.js";
 
 import passport from "passport";
+import jwt from "jsonwebtoken";
 
 import { authenticateJWT } from "../middlewares/auth.js";
 
@@ -21,8 +22,11 @@ router.route("/google/callback").get(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    // console.log(req.user);
-    res.redirect("http://localhost:3000");
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.redirect(`http://localhost:3000?token=${token}`);
   }
 );
 

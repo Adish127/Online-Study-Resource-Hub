@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    googleId: {
+      type: String,
+      unique: true,
+      default: null,
+    },
     username: {
       type: String,
       unique: true,
@@ -31,8 +36,7 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default:
-        "https://res.cloudinary.com/dcennwifb/image/upload/v1721563699/default-avatar_h2rbwj.jpg",
+      default: null,
     },
     isProfileComplete: { type: Boolean, default: false },
     uploadedResources: [
