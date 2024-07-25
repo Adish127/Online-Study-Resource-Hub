@@ -65,7 +65,7 @@ const completeRegistration = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       user._id,
       {
         name,
@@ -87,6 +87,14 @@ const completeRegistration = async (req, res) => {
 
 const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
   try {
+    // Restrict domain
+    const email = profile.emails[0].value;
+    if (!email.endsWith("@psgtech.ac.in")) {
+      return done(null, false, {
+        message: "Only PSG Tech email addresses are allowed",
+      });
+    }
+
     // Find or create user based on Google ID
     let user = await User.findOne({ googleId: profile.id });
 
@@ -95,7 +103,7 @@ const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
       user = new User({
         googleId: profile.id,
         username: profile.displayName,
-        email: profile.emails[0].value,
+        email: email,
         // Generate a strong password
         password: await bcryptjs.hash(
           `${profile.id}${process.env.JWT_SECRET}`,
@@ -118,6 +126,7 @@ const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
 
       // Update user with the Cloudinary profile picture URL
       user.profilePicture = uploadResponse.secure_url;
+      user.profilePictureUploadId = uploadResponse.public_id;
       await user.save();
     }
 

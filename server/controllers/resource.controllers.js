@@ -1,5 +1,7 @@
 import Resource from "../models/resource.model.js";
 import User from "../models/user.model.js";
+import Tag from "../models/tag.model.js";
+
 import { uploadResourcesToCloudinary } from "../utils/cloudinary.js";
 import cloudinary from "../config/cloudinary.js";
 
@@ -210,18 +212,27 @@ const createResource = async (req, res) => {
 
 const searchAndFilterResources = async (req, res) => {
   try {
-    const { query, category, accessLevel } = req.body;
+    const { query = "", category, accessLevel } = req.query;
+
+    // Step 1: Find tag IDs by name if query is present
+    let tagIds = [];
+    if (query) {
+      const tags = await Tag.find({ name: { $regex: query, $options: "i" } });
+      tagIds = tags.map((tag) => tag._id);
+    }
+
+    // Step 2: Build search criteria
     const searchCriteria = {
       $and: [
         {
           $or: [
             { fileName: { $regex: query, $options: "i" } },
             { description: { $regex: query, $options: "i" } },
-            { tags: { $regex: query, $options: "i" } },
           ],
         },
-        { category },
-        { accessLevel },
+        category ? { category } : {},
+        accessLevel ? { accessLevel } : {},
+        tagIds.length > 0 ? { tags: { $in: tagIds } } : {}, // Match if any tag is in the resource's tags
       ],
     };
 

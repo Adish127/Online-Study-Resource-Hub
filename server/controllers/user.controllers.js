@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { uploadProfilePicturesToCloudinary } from "../utils/cloudinary.js";
+import cloudinary from "../config/cloudinary.js";
 
 // Controllers for user profile management, not by admin
 // Get user profile
@@ -135,6 +136,10 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Delete the user's profile picture from Cloudinary
+    if (user.profilePictureUploadId) {
+      await cloudinary.v2.uploader.destroy(user.profilePictureUploadId);
+    }
     res.status(200).json({ message: "User deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -156,10 +161,14 @@ const updateUserProfilePic = async (req, res) => {
     }
 
     // Upload the file to Cloudinary
-    const result = await uploadProfilePicturesToCloudinary(req.file.buffer);
+    const result = await uploadProfilePicturesToCloudinary(
+      req,
+      req.file.buffer
+    );
 
     // Update the user's profile picture URL
     user.profilePicture = result.secure_url;
+    user.profilePictureUploadId = result.public_id;
     await user.save();
 
     // Send a success response

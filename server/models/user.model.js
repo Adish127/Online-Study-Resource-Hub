@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    profilePictureUploadId: {
+      type: String,
+      default: null,
+    },
     isProfileComplete: { type: Boolean, default: false },
     uploadedResources: [
       {

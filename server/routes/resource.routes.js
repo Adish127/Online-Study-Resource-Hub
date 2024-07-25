@@ -17,10 +17,6 @@ import upload from "../middlewares/multer.js";
 
 const router = express.Router();
 
-router.route("/").get(authenticateJWT, verifyAdmin, getResources);
-router.route("/:id").get(authenticateJWT, verifyAdmin, getResource);
-router.route("/:id").delete(authenticateJWT, verifyAdmin, deleteResource);
-
 router.route("/browse").get(authenticateJWT, browseResources);
 router
   .route("/upload")
@@ -33,5 +29,9 @@ router.route("/delete/:id").delete(authenticateJWT, deleteResourceFile);
 router.route("/search").post(authenticateJWT, searchAndFilterResources);
 router.route("/update-access/:id").put(authenticateJWT, manageResourceAccess);
 router.route("/like/:id").put(authenticateJWT, likeResource);
+
+router.route("/").get(authenticateJWT, verifyAdmin, getResources);
+router.route("/:id").get(authenticateJWT, verifyAdmin, getResource);
+router.route("/:id").delete(authenticateJWT, verifyAdmin, deleteResource);
 
 export default router;

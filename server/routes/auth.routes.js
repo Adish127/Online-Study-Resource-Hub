@@ -19,14 +19,20 @@ router
 router.route("/google/callback").get(
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "/login",
+    failureRedirect: process.env.GOOGLE_FAILURE_REDIRECT.toString(),
   }),
   (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Invalid domain" });
+    }
+
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    res.redirect(`http://localhost:3000?token=${token}`);
+    res.json({ token });
+
+    res.redirect(`${process.env.GOOGLE_SUCCESS_REDIRECT}?token=${token}`);
   }
 );
 
