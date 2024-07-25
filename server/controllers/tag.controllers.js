@@ -99,45 +99,75 @@ const removeTags = async (req, res) => {
 };
 
 // Function to delete tag from db
+// const deleteTag = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const tag = await Tag.findById(id);
+
+//     // Find all parent tags whose children array contains this tag id and remove this tag id from every parent's children array
+//     const parentTags = await Tag.find({ children: { $in: [id] } });
+//     parentTags.forEach(async (parentTag) => {
+//       parentTag.children = parentTag.children.filter(
+//         (child) => child.toString() !== id
+//       );
+//       await parentTag.save();
+//     });
+
+//     // Find all tags with this tag id as their parent and set their parent to themselves
+//     const childrenTags = await Tag.find({ parent: id });
+//     childrenTags.forEach(async (childTag) => {
+//       childTag.parent = childTag._id;
+//       await childTag.save();
+//     });
+
+//     // Find all users with this tag id in their interests and remove this tag id from every user's interests
+//     const users = await User.find({ interests: { $in: [id] } });
+//     users.forEach(async (user) => {
+//       user.interests = user.interests.filter(
+//         (interest) => interest.toString() !== id
+//       );
+//       await user.save();
+//     });
+
+//     // Find all resources with this tag id in their tags and remove this tag id from every resource's tags
+//     const resources = await Resource.find({ tags: { $in: [id] } });
+//     resources.forEach(async (resource) => {
+//       resource.tags = resource.tags.filter((tag) => tag.toString() !== id);
+//       await resource.save();
+//     });
+
+//     await tag.remove();
+
+//     res.status(200).json({ message: "Tag deleted" });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 const deleteTag = async (req, res) => {
   try {
     const { id } = req.params;
 
     const tag = await Tag.findById(id);
+    if (!tag) {
+      return res.status(404).json({ message: "Tag not found" });
+    }
 
-    // Find all parent tags whose children array contains this tag id and remove this tag id from every parent's children array
-    const parentTags = await Tag.find({ children: { $in: [id] } });
-    parentTags.forEach(async (parentTag) => {
-      parentTag.children = parentTag.children.filter(
-        (child) => child.toString() !== id
-      );
-      await parentTag.save();
-    });
+    // Remove this tag id from all parent tags' children array
+    await Tag.updateMany({ children: id }, { $pull: { children: id } });
 
-    // Find all tags with this tag id as their parent and set their parent to themselves
-    const childrenTags = await Tag.find({ parent: id });
-    childrenTags.forEach(async (childTag) => {
-      childTag.parent = childTag._id;
-      await childTag.save();
-    });
+    // Set parent to null for all tags with this tag id as their parent
+    await Tag.updateMany({ parent: id }, { parent: null });
 
-    // Find all users with this tag id in their interests and remove this tag id from every user's interests
-    const users = await User.find({ interests: { $in: [id] } });
-    users.forEach(async (user) => {
-      user.interests = user.interests.filter(
-        (interest) => interest.toString() !== id
-      );
-      await user.save();
-    });
+    // Remove this tag id from all users' interests
+    await User.updateMany({ interests: id }, { $pull: { interests: id } });
 
-    // Find all resources with this tag id in their tags and remove this tag id from every resource's tags
-    const resources = await Resource.find({ tags: { $in: [id] } });
-    resources.forEach(async (resource) => {
-      resource.tags = resource.tags.filter((tag) => tag.toString() !== id);
-      await resource.save();
-    });
+    // Remove this tag id from all resources' tags
+    await Resource.updateMany({ tags: id }, { $pull: { tags: id } });
 
-    await tag.remove();
+    // Finally, remove the tag itself
+    await Tag.deleteOne({ _id: id });
 
     res.status(200).json({ message: "Tag deleted" });
   } catch (error) {
