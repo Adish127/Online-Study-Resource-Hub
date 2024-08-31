@@ -1,53 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchUserProfile } from "./api/apiServices";
 
 const Dashboard = () => {
   const [userProfile, setUserProfile] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Extract token from URL
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    const fetchData = async () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token") || localStorage.getItem("token");
 
-    if (!token) {
-      // If no token is found, redirect to login
-      console.log("No token found");
-      navigate("/login");
-    } else {
-      // Fetch user profile
-      localStorage.setItem("token", token);
-      fetchUserProfile(token);
-    }
-  }, [navigate]);
-
-  const fetchUserProfile = async (token) => {
-    try {
-      const response = await fetch(
-        "http://localhost:5001/api/v2/users/profile",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        if (!token) {
+          console.log("No token found");
+          navigate("/login");
+          return;
         }
-      );
 
-      if (response.ok) {
-        const profileData = await response.json();
-        setUserProfile(profileData);
+        // Fetch user profile
+        const userProfileData = await fetchUserProfile(token);
 
-        // Update URL with user ID
-        navigate("/dashboard");
-      } else {
-        // Handle unauthorized or error response
+        if (!userProfileData.isProfileComplete) {
+          // Redirect to profile completion page if profile is not completed
+          navigate("/profile-completion");
+          return;
+        }
+
+        setUserProfile(userProfileData);
+        navigate("/dashboard", { replace: true }); // Ensure proper navigation
+      } catch (error) {
+        console.error("Error fetching data:", error);
         navigate("/login");
       }
-    } catch (error) {
-      console.error("Failed to fetch user profile:", error);
-      navigate("/login");
-    }
-  };
+    };
+
+    fetchData();
+  }, [navigate]);
 
   return (
     <div>

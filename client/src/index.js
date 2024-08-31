@@ -7,16 +7,23 @@ import "./index.css";
 
 import Login from "./Login";
 import Dashboard from "./Dashboard"; // Import your Dashboard component
+import CompleteRegistration from "./CompleteRegistration";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <GoogleOAuthProvider clientId="178224198268-iu7k5s4e9ks7t5r09tofphatteas4q4h.apps.googleusercontent.com">
+  <GoogleOAuthProvider
+    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID.toString()}
+  >
     <React.StrictMode>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/profile-completion"
+            element={<CompleteRegistration />}
+          />
         </Routes>
       </Router>
     </React.StrictMode>

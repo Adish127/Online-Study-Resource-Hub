@@ -1,9 +1,5 @@
 import express from "express";
-import {
-  login,
-  initialRegister,
-  completeRegistration,
-} from "../controllers/auth.controllers.js";
+import { completeRegistration } from "../controllers/auth.controllers.js";
 
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -44,10 +40,10 @@ router.route("/google/callback").get(
   }
 );
 
-router.route("/login").post(login);
+// router.route("/login").post(login);
 router
   .route("/register/complete-profile")
   .put(authenticateJWT, completeRegistration);
-router.route("/register").post(initialRegister);
+// router.route("/register").post(initialRegister);
 
 export default router;
