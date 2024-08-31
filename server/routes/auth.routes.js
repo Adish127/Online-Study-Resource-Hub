@@ -19,19 +19,27 @@ router
 router.route("/google/callback").get(
   passport.authenticate("google", {
     session: false,
-    failureRedirect: process.env.GOOGLE_FAILURE_REDIRECT.toString(),
+    failureRedirect: process.env.GOOGLE_FAILURE_REDIRECT,
   }),
   (req, res) => {
     if (!req.user) {
       return res.status(401).json({ message: "Invalid domain" });
     }
 
+    // Create JWT token
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    res.json({ token });
+    // Set the token as an HTTP-only cookie
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
+    // });
 
+    // Redirect to frontend
+    // res.json({ token });
     res.redirect(`${process.env.GOOGLE_SUCCESS_REDIRECT}?token=${token}`);
   }
 );

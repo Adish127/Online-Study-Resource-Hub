@@ -21,7 +21,13 @@ const app = express();
 
 // Inbuilt Middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Frontend origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // Allow cookies to be sent
+  })
+);
 app.use(express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());

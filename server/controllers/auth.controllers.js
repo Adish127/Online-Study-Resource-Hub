@@ -109,7 +109,7 @@ const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
           `${profile.id}${process.env.JWT_SECRET}`,
           10
         ),
-        isProfileComplete: false, // New user needs to complete their profile
+        isProfileComplete: false,
       });
       await user.save();
     }
@@ -124,7 +124,6 @@ const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
         }
       );
 
-      // Update user with the Cloudinary profile picture URL
       user.profilePicture = uploadResponse.secure_url;
       user.profilePictureUploadId = uploadResponse.public_id;
       await user.save();
