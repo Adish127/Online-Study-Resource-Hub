@@ -1,16 +1,16 @@
+// features/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = {
-  profile: null,
-};
 
 const userSlice = createSlice({
   name: "user",
-  initialState,
+  initialState: {
+    profile: null,
+  },
   reducers: {
     setUserProfile: (state, action) => {
       state.profile = action.payload;
     },
+    // Other reducers if needed
   },
 });
 

@@ -3,15 +3,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { completeProfile } from "./api/apiServices";
 import { setUserProfile } from "./features/userSlice";
+import "./CompleteRegistration.css"; // Import your custom CSS
 
 const CompleteRegistration = () => {
-  const userProfile = useSelector((state) => state.user.profile); // Get user profile from Redux
+  const userProfile = useSelector((state) => state.user.profile);
   const [profileData, setProfileData] = useState({
     name: userProfile?.name || "",
     department: userProfile?.department || "",
     bio: userProfile?.bio || "",
     interests: userProfile?.interests || [],
   });
+  const [profilePicture, setProfilePicture] = useState(
+    userProfile?.profilePicture || ""
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,6 +25,15 @@ const CompleteRegistration = () => {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    // Here you can handle the file upload
+    // For example, upload to Cloudinary and then update profile picture URL
+    // Once uploaded, update the profile picture URL in state
+    // Example:
+    // uploadFile(file).then((url) => setProfilePicture(url));
   };
 
   const handleSaveProfile = async () => {
@@ -35,14 +48,43 @@ const CompleteRegistration = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error saving profile:", error);
-      // Handle error (e.g., show a message to the user)
     }
   };
 
   return (
-    <div>
+    <div className="complete-registration-container">
       <h1>Complete Your Profile</h1>
-      <form>
+      <div className="profile-photo-section">
+        <img src={profilePicture} alt="Profile" className="profile-photo" />
+        <label className="choose-photo-link">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="file-input"
+          />
+          Choose New Picture
+        </label>
+      </div>
+      <form className="profile-form">
+        <label>
+          Email:
+          <input
+            type="text"
+            value={userProfile?.email || ""}
+            disabled
+            className="disabled-input"
+          />
+        </label>
+        <label>
+          Username:
+          <input
+            type="text"
+            value={userProfile?.username || ""}
+            disabled
+            className="disabled-input"
+          />
+        </label>
         <label>
           Name:
           <input
@@ -50,6 +92,7 @@ const CompleteRegistration = () => {
             name="name"
             value={profileData.name}
             onChange={handleInputChange}
+            className="text-input"
           />
         </label>
         <label>
@@ -59,6 +102,7 @@ const CompleteRegistration = () => {
             name="department"
             value={profileData.department}
             onChange={handleInputChange}
+            className="text-input"
           />
         </label>
         <label>
@@ -67,6 +111,7 @@ const CompleteRegistration = () => {
             name="bio"
             value={profileData.bio}
             onChange={handleInputChange}
+            className="textarea-input"
           />
         </label>
         <label>
@@ -81,10 +126,14 @@ const CompleteRegistration = () => {
                 interests: e.target.value.split(",").map((item) => item.trim()),
               })
             }
+            className="text-input"
           />
         </label>
-        {/* Add more form fields as necessary */}
-        <button type="button" onClick={handleSaveProfile}>
+        <button
+          type="button"
+          onClick={handleSaveProfile}
+          className="save-button"
+        >
           Save Profile
         </button>
       </form>

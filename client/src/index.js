@@ -7,6 +7,7 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import CompleteRegistration from "./CompleteRegistration";
 import store from "./app/store";
+import Resources from "./Resources";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -20,6 +21,7 @@ root.render(
             path="/profile-completion"
             element={<CompleteRegistration />}
           />
+          <Route path="/resources" element={<Resources />} />
         </Routes>
       </Router>
     </Provider>
