@@ -1,121 +1,92 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { completeProfile } from "./api/apiServices";
+import { setUserProfile } from "./features/userSlice";
 
 const CompleteRegistration = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    role: "student",
-    department: "",
-    bio: "",
-    profilePicture: "",
-    interests: "",
+  const userProfile = useSelector((state) => state.user.profile); // Get user profile from Redux
+  const [profileData, setProfileData] = useState({
+    name: userProfile?.name || "",
+    department: userProfile?.department || "",
+    bio: userProfile?.bio || "",
+    interests: userProfile?.interests || [],
   });
-
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setProfileData((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSaveProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
+      const updatedProfile = await completeProfile(token, profileData);
 
-      const response = await completeProfile(token, formData);
+      // Update the profile in Redux store
+      dispatch(setUserProfile(updatedProfile));
 
-      if (response.ok) {
-        navigate("/dashboard"); // Navigate to dashboard after successful registration
-      } else {
-        const errorData = await response.json();
-        setError(
-          errorData.message ||
-            "Failed to complete registration. Please try again."
-        );
-      }
+      // Redirect to the dashboard
+      navigate("/dashboard");
     } catch (error) {
-      console.error("Error completing registration:", error);
-      setError("Failed to complete registration. Please try again.");
+      console.error("Error saving profile:", error);
+      // Handle error (e.g., show a message to the user)
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Complete Registration</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Name:</label>
+    <div>
+      <h1>Complete Your Profile</h1>
+      <form>
+        <label>
+          Name:
           <input
             type="text"
             name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
+            value={profileData.name}
+            onChange={handleInputChange}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Role:</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Department:</label>
+        </label>
+        <label>
+          Department:
           <input
             type="text"
             name="department"
-            value={formData.department}
-            onChange={handleChange}
-            required
+            value={profileData.department}
+            onChange={handleInputChange}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Bio:</label>
+        </label>
+        <label>
+          Bio:
           <textarea
             name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Profile Picture URL:</label>
-          <input
-            type="text"
-            name="profilePicture"
-            value={formData.profilePicture}
-            onChange={handleChange}
+            value={profileData.bio}
+            onChange={handleInputChange}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Interests (comma-separated):</label>
+        </label>
+        <label>
+          Interests:
           <input
             type="text"
             name="interests"
-            value={formData.interests}
-            onChange={handleChange}
+            value={profileData.interests.join(", ")}
+            onChange={(e) =>
+              setProfileData({
+                ...profileData,
+                interests: e.target.value.split(",").map((item) => item.trim()),
+              })
+            }
           />
-        </div>
-        <button type="submit">Submit</button>
+        </label>
+        {/* Add more form fields as necessary */}
+        <button type="button" onClick={handleSaveProfile}>
+          Save Profile
+        </button>
       </form>
     </div>
   );

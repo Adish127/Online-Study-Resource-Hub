@@ -1,21 +1,17 @@
-// src/index.js
+// index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import "./index.css";
-
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "./Dashboard";
 import Login from "./Login";
-import Dashboard from "./Dashboard"; // Import your Dashboard component
 import CompleteRegistration from "./CompleteRegistration";
+import store from "./app/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-
 root.render(
-  <GoogleOAuthProvider
-    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID.toString()}
-  >
-    <React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -26,6 +22,6 @@ root.render(
           />
         </Routes>
       </Router>
-    </React.StrictMode>
-  </GoogleOAuthProvider>
+    </Provider>
+  </React.StrictMode>
 );

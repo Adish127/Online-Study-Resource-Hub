@@ -9,10 +9,11 @@ const authenticateJWT = (req, res, next) => {
   }
 
   const token = authorizationHeader.split(" ")[1];
+  console.log("Token:", token);
 
   jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
     if (error) {
-      console.log("Error in auth");
+      console.log("Error in auth", error);
       return res.status(403).json({ message: "No access" });
     }
 

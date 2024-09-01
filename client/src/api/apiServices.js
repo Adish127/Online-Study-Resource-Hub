@@ -43,7 +43,7 @@ const completeProfile = async (token, profileData) => {
       body: JSON.stringify(profileData),
     });
 
-    return response;
+    return response.json;
   } catch (error) {
     console.error("Failed to complete profile:", error);
     throw error;

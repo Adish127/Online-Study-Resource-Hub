@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserProfile } from "./features/userSlice";
 import { fetchUserProfile } from "./api/apiServices";
 
 const Dashboard = () => {
-  const [userProfile, setUserProfile] = useState(null);
+  const dispatch = useDispatch();
+  const userProfile = useSelector((state) => state.user.profile); // Select user profile from the Redux store
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const params = new URLSearchParams(window.location.search);
+        // console.log("params", params);
         const token = params.get("token") || localStorage.getItem("token");
+        localStorage.setItem("token", token);
 
         if (!token) {
           console.log("No token found");
@@ -18,25 +23,21 @@ const Dashboard = () => {
           return;
         }
 
-        // Fetch user profile
         const userProfileData = await fetchUserProfile(token);
+        dispatch(setUserProfile(userProfileData)); // Dispatch action to store profile in Redux
 
         if (!userProfileData.isProfileComplete) {
-          // Redirect to profile completion page if profile is not completed
-          navigate("/profile-completion");
-          return;
+          console.log("Profile is not complete", userProfileData);
+          navigate("/profile-completion"); // Redirect if profile is not complete
         }
-
-        setUserProfile(userProfileData);
-        navigate("/dashboard", { replace: true }); // Ensure proper navigation
       } catch (error) {
         console.error("Error fetching data:", error);
-        navigate("/login");
+        navigate("/login"); // Redirect to login on error
       }
     };
 
     fetchData();
-  }, [navigate]);
+  }, [dispatch, navigate]);
 
   return (
     <div>
@@ -44,7 +45,8 @@ const Dashboard = () => {
       {userProfile ? (
         <div>
           <p>Welcome, {userProfile.email}!</p>
-          {/* Display other user profile details */}
+          <p>Here is your profile:</p>
+          <pre>{JSON.stringify(userProfile, null, 2)}</pre>
         </div>
       ) : (
         <p>Loading...</p>
