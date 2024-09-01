@@ -50,4 +50,25 @@ const completeProfile = async (token, profileData) => {
   }
 };
 
+// Profile picture
+const uploadProfilePicture = async (token, profilePicture) => {
+  try {
+    const formData = new FormData();
+    formData.append("profilePicture", profilePicture);
+
+    const response = await fetch(API_ENDPOINTS.USERS.PROFILE_PICTURE, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Failed to upload profile picture:", error);
+    throw error;
+  }
+};
+
 export { fetchUserProfile, completeProfile };
