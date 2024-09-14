@@ -1,4 +1,3 @@
-// index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -6,10 +5,29 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import CompleteRegistration from "./CompleteRegistration";
-import store from "./app/store";
 import Resources from "./Resources";
+import store from "./app/store";
+import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
+import { setUserProfile, setLoading, setError } from "./features/userSlice";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const token = localStorage.getItem("token");
+
+if (token) {
+  store.dispatch(setLoading("loading")); // Set status to loading
+  fetchUserProfile(token)
+    .then((response) => {
+      store.dispatch(setUserProfile(response));
+      store.dispatch(setLoading("succeeded")); // Set status to succeeded
+    })
+    .catch((err) => {
+      store.dispatch(setError("Failed to fetch user profile."));
+      store.dispatch(setLoading("failed")); // Set status to failed
+      console.error("Error fetching profile data:", err);
+    });
+}
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

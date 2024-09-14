@@ -18,7 +18,7 @@ router.route("/profile").get(authenticateJWT, getUserProfile);
 router.route("/profile/update").put(authenticateJWT, updateUserProfile);
 router
   .route("/profile/updatepic")
-  .put(authenticateJWT, upload.single("profile"), updateUserProfilePic);
+  .put(authenticateJWT, upload.single("file"), updateUserProfilePic);
 
 router.route("/").get(authenticateJWT, verifyAdmin, getUsers);
 router.route("/:id").get(authenticateJWT, verifyAdmin, getUserById);

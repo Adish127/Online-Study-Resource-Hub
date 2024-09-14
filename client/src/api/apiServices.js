@@ -19,6 +19,7 @@ const fetchUserProfile = async (token) => {
       },
     });
 
+    // console.log(response);
     if (response.ok) {
       const profileData = await response.json();
       return profileData;
@@ -34,16 +35,20 @@ const fetchUserProfile = async (token) => {
 // Complete profile
 const completeProfile = async (token, profileData) => {
   try {
-    const response = await fetch(API_ENDPOINTS.AUTH.COMPLETE_PROFILE, {
+    const response = await fetch(API_ENDPOINTS.USERS.UPDATE_PROFILE, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Set Content-Type header
       },
-      body: JSON.stringify(profileData),
+      body: JSON.stringify({ ...profileData, isProfileComplete: true }), // Stringify the JSON body
     });
 
-    return response.json;
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    // return await response.json(); // Return the parsed JSON response
   } catch (error) {
     console.error("Failed to complete profile:", error);
     throw error;
@@ -51,24 +56,21 @@ const completeProfile = async (token, profileData) => {
 };
 
 // Profile picture
-const uploadProfilePicture = async (token, profilePicture) => {
+const updateProfilePicture = async (token, formData) => {
   try {
-    const formData = new FormData();
-    formData.append("profilePicture", profilePicture);
-
-    const response = await fetch(API_ENDPOINTS.USERS.PROFILE_PICTURE, {
-      method: "POST",
+    const response = await fetch(API_ENDPOINTS.USERS.UPDATE_PROFILE_PIC, {
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: formData,
+      body: formData, // Send the raw file data
     });
 
-    return response.json();
+    return await response.json();
   } catch (error) {
-    console.error("Failed to upload profile picture:", error);
+    console.error("Failed to update profile picture:", error);
     throw error;
   }
 };
 
-export { fetchUserProfile, completeProfile };
+export { fetchUserProfile, completeProfile, updateProfilePicture };

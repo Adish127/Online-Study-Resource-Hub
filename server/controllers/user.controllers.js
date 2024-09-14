@@ -21,11 +21,13 @@ const getUserProfile = async (req, res) => {
 // Update user profile
 const updateUserProfile = async (req, res) => {
   try {
+    console.log({ body: req.body });
     const allowedUpdates = [
       "username",
       "password",
       "name",
       "department",
+      "interests",
       "bio",
     ];
 
@@ -46,10 +48,14 @@ const updateUserProfile = async (req, res) => {
       updateFields,
       { new: true }
     );
+    // console.log({ updatedProfile });
 
     if (!updatedProfile) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    // Donot select password
+    // updatedProfile.password = undefined;
 
     res.status(200).json({ message: "Profile updated" });
   } catch (error) {
@@ -150,17 +156,22 @@ const deleteUser = async (req, res) => {
 const updateUserProfilePic = async (req, res) => {
   try {
     // Find the user by ID
+    // console.log(req.user);
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Ensure that a file is uploaded
+    // console.log(req.file);
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
+    // console.log(req.file);
+
     // Upload the file to Cloudinary
+    // console.log(req.file);
     const result = await uploadProfilePicturesToCloudinary(
       req,
       req.file.buffer
@@ -168,6 +179,7 @@ const updateUserProfilePic = async (req, res) => {
 
     // Update the user's profile picture URL
     user.profilePicture = result.secure_url;
+    // console.log(user.profilePicture);
     user.profilePictureUploadId = result.public_id;
     await user.save();
 
