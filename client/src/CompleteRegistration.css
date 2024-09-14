@@ -1,12 +1,14 @@
 /* Main container settings with more padding and centered content */
 .complete-registration-modern-container {
-  max-width: 900px;
+  max-width: 1200px; /* Increase if needed */
   margin: auto;
   padding: 40px; /* Ensure sufficient space around the form */
   background: #f9f9f9;
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  font-family: "Roboto", sans-serif; /* Clean and modern font */
+  font-family: Arial, sans-serif; /* Clean and modern font */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Profile photo section with sufficient spacing */
@@ -34,7 +36,6 @@
   align-items: center;
   cursor: pointer;
   position: relative;
-  transition: background-color 0.3s ease;
   overflow: hidden; /* Ensure content doesn't overflow */
 }
 
@@ -156,17 +157,6 @@
 }
 
 /* Styling for the loading spinner and blur effect */
-.complete-registration-modern-container {
-  position: relative;
-  max-width: 900px;
-  margin: auto;
-  padding: 40px;
-  background: #f9f9f9;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  font-family: "Roboto", sans-serif;
-}
-
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -199,49 +189,35 @@
   }
 }
 
-/* Profile photo dropzone styling */
-.profile-photo-dropzone {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
+/* Ensure the main container is flex */
+.complete-registration-main {
+  display: flex;
+}
+
+/* Sidebar styling */
+.complete-registration-sidebar {
+  width: 250px; /* Adjust the width of the sidebar */
   background-color: #f0f0f0;
-  border: 2px dashed #1e90ff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden; /* Ensures that the button doesn't overflow */
+  padding: 20px;
 }
 
-/* Plus button style */
-.add-photo-button {
-  position: absolute;
-  bottom: -10px; /* Position at the bottom, adjust if needed */
-  right: -10px; /* Position at the right, adjust if needed */
-  width: 36px;
-  height: 36px;
-  background-color: white;
-  border-radius: 50%;
-  border: 2px solid #1e90ff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transform: translate(
-    50%,
-    50%
-  ); /* Adjust to be 50% visible inside and outside */
+/* Content area styling */
+.complete-registration-content {
+  flex: 1; /* Takes up the remaining space */
+  padding: 20px;
 }
 
-.add-photo-button:hover {
-  background-color: #e6f7ff;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-}
+/* Add media queries if needed for responsiveness */
+@media (max-width: 768px) {
+  .complete-registration-main {
+    flex-direction: column;
+  }
 
-.add-photo-button::before {
-  content: "+";
-  font-size: 20px;
-  color: #1e90ff;
+  .complete-registration-sidebar {
+    width: 100%; /* Full width on small screens */
+  }
+
+  .complete-registration-content {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
 }

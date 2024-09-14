@@ -7,6 +7,9 @@ import {
   updateProfilePicture,
   fetchUserProfile,
 } from "./api/apiServices";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+import Footer from "./Footer";
 import "./CompleteRegistration.css";
 
 const CompleteRegistration = () => {
@@ -126,108 +129,120 @@ const CompleteRegistration = () => {
   };
 
   return (
-    <div className="complete-registration-modern-container">
-      {loading && (
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
-        </div>
-      )}
-      <h1>Complete Your Profile</h1>
-      <div className="profile-photo-section">
-        <div className="profile-photo-upload-text">
-          Drag and drop or click to upload
-        </div>
-        <div
-          className={`profile-photo-dropzone ${dragging ? "dragging" : ""}`}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onClick={handlePhotoClick}
-        >
-          <img src={profilePicture} className="profile-photo" />
+    <div className="complete-registration-container">
+      <Header userProfile={userProfile} />
+      <div className="complete-registration-main">
+        <Sidebar />
+
+        <div className="complete-registration-content">
+          {loading && (
+            <div className="loading-overlay">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
+          <h1>Complete Your Profile</h1>
+          <div className="profile-photo-section">
+            <div className="profile-photo-upload-text">
+              Drag and drop or click to upload
+            </div>
+            <div
+              className={`profile-photo-dropzone ${dragging ? "dragging" : ""}`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onClick={handlePhotoClick}
+            >
+              <img
+                src={profilePicture}
+                className="profile-photo"
+                alt="Profile"
+              />
+            </div>
+          </div>
+          <form className="profile-form-modern">
+            <div className="form-row">
+              <div className="form-col">
+                <label>Email:</label>
+                <input
+                  type="text"
+                  value={userProfile?.email || ""}
+                  disabled
+                  className="disabled-input-modern"
+                />
+              </div>
+              <div className="form-col">
+                <label>Username:</label>
+                <input
+                  type="text"
+                  value={userProfile?.username || ""}
+                  disabled
+                  className="disabled-input-modern"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-col">
+                <label>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={profileData.name}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                />
+              </div>
+              <div className="form-col">
+                <label>Department:</label>
+                <input
+                  type="text"
+                  name="department"
+                  value={profileData.department}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-col">
+                <label>Bio:</label>
+                <textarea
+                  name="bio"
+                  value={profileData.bio}
+                  onChange={handleInputChange}
+                  className="textarea-input-modern"
+                />
+              </div>
+              <div className="form-col">
+                <label>Interests:</label>
+                <input
+                  type="text"
+                  name="interests"
+                  value={profileData.interests.join(", ")}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      interests: e.target.value
+                        .split(",")
+                        .map((item) => item.trim()),
+                    })
+                  }
+                  className="text-input-modern"
+                />
+              </div>
+            </div>
+            {error && <p className="error-message-modern">{error}</p>}
+            <button
+              type="button"
+              onClick={handleSaveProfile}
+              className="save-button-modern"
+              disabled={loading}
+            >
+              Save Profile
+            </button>
+          </form>
         </div>
       </div>
-      <form className="profile-form-modern">
-        <div className="form-row">
-          <div className="form-col">
-            <label>Email:</label>
-            <input
-              type="text"
-              value={userProfile?.email || ""}
-              disabled
-              className="disabled-input-modern"
-            />
-          </div>
-          <div className="form-col">
-            <label>Username:</label>
-            <input
-              type="text"
-              value={userProfile?.username || ""}
-              disabled
-              className="disabled-input-modern"
-            />
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-col">
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={profileData.name}
-              onChange={handleInputChange}
-              className="text-input-modern"
-            />
-          </div>
-          <div className="form-col">
-            <label>Department:</label>
-            <input
-              type="text"
-              name="department"
-              value={profileData.department}
-              onChange={handleInputChange}
-              className="text-input-modern"
-            />
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-col">
-            <label>Bio:</label>
-            <textarea
-              name="bio"
-              value={profileData.bio}
-              onChange={handleInputChange}
-              className="textarea-input-modern"
-            />
-          </div>
-          <div className="form-col">
-            <label>Interests:</label>
-            <input
-              type="text"
-              name="interests"
-              value={profileData.interests.join(", ")}
-              onChange={(e) =>
-                setProfileData({
-                  ...profileData,
-                  interests: e.target.value
-                    .split(",")
-                    .map((item) => item.trim()),
-                })
-              }
-              className="text-input-modern"
-            />
-          </div>
-        </div>
-        {error && <p className="error-message-modern">{error}</p>}
-        <button
-          type="button"
-          onClick={handleSaveProfile}
-          className="save-button-modern"
-          disabled={loading}
-        >
-          Save Profile
-        </button>
-      </form>
+      <Footer />
     </div>
   );
 };

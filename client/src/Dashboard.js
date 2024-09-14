@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+// Dashboard.js
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
-import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
-import "./Dashboard.css"; // Import your custom CSS
+import { fetchUserProfile } from "./api/apiServices";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+import Footer from "./Footer";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector((state) => state.user.profile);
-  const userStatus = useSelector((state) => state.user.status); // Check loading or error status
+  const userStatus = useSelector((state) => state.user.status);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,23 +23,21 @@ const Dashboard = () => {
       return;
     }
 
-    // Fetch profile directly if not available
     if (!userProfile && userStatus === "idle") {
-      dispatch(setLoading("loading")); // Set status to loading
+      dispatch(setLoading("loading"));
       fetchUserProfile(token)
         .then((response) => {
           dispatch(setUserProfile(response));
-          dispatch(setLoading("succeeded")); // Set status to succeeded
+          dispatch(setLoading("succeeded"));
         })
         .catch((err) => {
           dispatch(setError("Failed to fetch user profile."));
-          dispatch(setLoading("failed")); // Set status to failed
+          dispatch(setLoading("failed"));
         });
     }
   }, [dispatch, navigate, userProfile, userStatus]);
 
   useEffect(() => {
-    // Redirect if profile is not complete
     if (userProfile && !userProfile.isProfileComplete) {
       navigate("/profile-completion");
     }
@@ -51,44 +53,10 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <header className="header">
-        <div className="logo">Resource Hub</div>
-        <div className="user-info">
-          {userProfile && (
-            <>
-              <Link to="/profile-completion">
-                <img
-                  src={userProfile.profilePicture}
-                  alt="Profile"
-                  className="profile-picture-small"
-                />
-              </Link>
-              <span className="user-name">{userProfile.name}</span>
-            </>
-          )}
-        </div>
-      </header>
+      <Header userProfile={userProfile} />
 
       <div className="main-container">
-        <aside className="sidebar">
-          <nav>
-            <Link to="/dashboard" className="nav-link">
-              Dashboard
-            </Link>
-            <Link to="/resources" className="nav-link">
-              My Resources
-            </Link>
-            <Link to="/study-groups" className="nav-link">
-              Study Groups
-            </Link>
-            <Link to="/notifications" className="nav-link">
-              Notifications
-            </Link>
-            <Link to="/interests" className="nav-link">
-              Interests
-            </Link>
-          </nav>
-        </aside>
+        <Sidebar />
 
         <main className="main-content">
           <section className="welcome-section">
@@ -120,9 +88,7 @@ const Dashboard = () => {
         </main>
       </div>
 
-      <footer className="footer">
-        <p>&copy; 2024 Resource Hub. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
