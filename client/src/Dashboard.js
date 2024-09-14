@@ -1,15 +1,16 @@
-// Dashboard.js
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
 import { fetchUserProfile } from "./api/apiServices";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
+import Popup from "./Popup";
 import "./Dashboard.css";
 
 const Dashboard = () => {
+  const [popup, setPopup] = useState({ visible: false, message: "", type: "" });
   const dispatch = useDispatch();
   const userProfile = useSelector((state) => state.user.profile);
   const userStatus = useSelector((state) => state.user.status);
@@ -19,8 +20,21 @@ const Dashboard = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      navigate("/login");
-      return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get("token");
+
+      if (urlToken) {
+        localStorage.setItem("token", urlToken);
+        setPopup({
+          visible: true,
+          message: "Welcome",
+          type: "success",
+        });
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate("/login");
+        return;
+      }
     }
 
     if (!userProfile && userStatus === "idle") {
@@ -43,6 +57,16 @@ const Dashboard = () => {
     }
   }, [userProfile, navigate]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    dispatch(setUserProfile(null)); // Clear the user profile from Redux store
+    navigate("/login"); // Redirect to login page
+  };
+
+  const handlePopupClose = () => {
+    setPopup({ ...popup, visible: false });
+  };
+
   if (userStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -64,6 +88,9 @@ const Dashboard = () => {
             <p>
               Here you can manage your resources, view study groups, and more.
             </p>
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
           </section>
 
           <section className="quick-stats">
@@ -89,6 +116,14 @@ const Dashboard = () => {
       </div>
 
       <Footer />
+
+      {popup.visible && (
+        <Popup
+          message={popup.message}
+          type={popup.type}
+          onClose={handlePopupClose}
+        />
+      )}
     </div>
   );
 };

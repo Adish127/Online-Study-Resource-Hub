@@ -7,6 +7,7 @@ import {
   updateProfilePicture,
   fetchUserProfile,
 } from "./api/apiServices";
+import { setPopup } from "./features/popupsSlice";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
@@ -116,13 +117,28 @@ const CompleteRegistration = () => {
         await updateProfilePicture(token, formData);
       }
 
-      // Manually dispatch profile update
       const updatedProfile = await fetchUserProfile(token);
       dispatch(setUserProfile(updatedProfile));
+
+      // Dispatch success popup
+      dispatch(
+        setPopup({
+          message: "Profile updated successfully!",
+          type: "success",
+        })
+      );
+
       navigate("/dashboard", { replace: true });
     } catch (error) {
       dispatch(setError("Failed to update profile. Please try again."));
-      setErrorState("Failed to update profile. Please try again.");
+
+      // Dispatch error popup
+      dispatch(
+        setPopup({
+          message: "Failed to update profile. Please try again.",
+          type: "error",
+        })
+      );
     } finally {
       setLoadingState(false);
     }

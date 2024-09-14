@@ -221,3 +221,6 @@
     padding: 10px; /* Adjust padding for smaller screens */
   }
 }
+.profile-photo-dropzone.dragging {
+  border: 2px dashed #007bff;
+}

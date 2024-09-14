@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchUserProfile } from "./api/apiServices"; // Direct API service import
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
+import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,16 +17,16 @@ const Login = () => {
     const token = localStorage.getItem("token");
 
     if (token) {
-      dispatch(setLoading("loading"));
+      dispatch(setLoading("loading")); // Set status to loading
       fetchUserProfile(token)
         .then((response) => {
           dispatch(setUserProfile(response));
-          dispatch(setLoading("succeeded"));
-          navigate("/dashboard");
+          dispatch(setLoading("succeeded")); // Set status to succeeded
+          navigate("/dashboard"); // Navigate to dashboard
         })
         .catch((err) => {
-          dispatch(setError("Error fetching profile data."));
-          dispatch(setLoading("failed"));
+          dispatch(setError("Failed to fetch user profile."));
+          dispatch(setLoading("failed")); // Set status to failed
           console.error("Error fetching profile data:", err);
         });
     }

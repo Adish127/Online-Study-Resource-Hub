@@ -46,3 +46,20 @@
 }
 
 /* Optionally, you may want to include styles for removed components if they are used elsewhere */
+.popup {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+  z-index: 1000;
+}
+
+.popup.success {
+  background-color: green;
+}
+
+.popup.error {
+  background-color: red;
+}
