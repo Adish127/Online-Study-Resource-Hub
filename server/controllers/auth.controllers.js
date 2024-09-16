@@ -114,13 +114,14 @@ const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
       await user.save();
     }
 
-    // Upload the profile picture to Cloudinary if it's not set or if the user is new
-    if (!user.profilePicture) {
+    // Check if the profile picture exists, if not upload it to Cloudinary
+    if (!user.profilePicture || !user.profilePictureUploadId) {
       const uploadResponse = await cloudinary.v2.uploader.upload(
         profile.photos[0].value,
         {
           folder: `userProfiles/${user._id}`,
           public_id: `${user._id}_profile`,
+          overwrite: true, // Ensures that previous image is overwritten
         }
       );
 
@@ -129,10 +130,55 @@ const handleGoogleLogin = async (accessToken, refreshToken, profile, done) => {
       await user.save();
     }
 
-    done(null, user);
+    // console.log(user);
+
+    // Generate a new JWT token every time the user logs in using Google
+    // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    //   expiresIn: "1d", // Token expires in 1 day
+    // });
+
+    // // console.log(token);
+
+    // // If token is expired, regenerate using refresh token
+    // const refreshJwtToken = jwt.sign(
+    //   { id: user._id },
+    //   process.env.JWT_REFRESH_SECRET,
+    //   {
+    //     expiresIn: "7d", // Optional: refresh token for longer expiration
+    //   }
+    // );
+
+    // Send both access token and refresh token to the client
+    return done(null, user);
   } catch (err) {
-    done(err, false, err.message);
+    console.error("Google Login Error:", err);
+    return done(err, false, { message: "Google login failed" });
   }
 };
 
-export { completeRegistration, handleGoogleLogin };
+const refreshTokenHandler = (req, res) => {
+  const { refreshToken } = req.body;
+  console.log({ refreshToken });
+
+  if (!refreshToken) {
+    return res.status(400).json({ message: "Refresh token required" });
+  }
+
+  jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    const newAccessToken = jwt.sign(
+      { id: decoded.id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.json({ accessToken: newAccessToken });
+  });
+};
+
+export { completeRegistration, handleGoogleLogin, refreshTokenHandler };

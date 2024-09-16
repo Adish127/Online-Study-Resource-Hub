@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
 import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Use this to get the tokens from URL params
   const dispatch = useDispatch();
 
   const handleGoogleLogin = () => {
@@ -14,7 +15,20 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get("accessToken");
+    const refreshToken = params.get("refreshToken");
+
+    if (accessToken && refreshToken) {
+      // Store tokens in localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      // Clear the URL params (optional, for better UX)
+      window.history.replaceState({}, document.title, "/login");
+    }
+
+    const token = accessToken || localStorage.getItem("accessToken");
 
     if (token) {
       dispatch(setLoading("loading")); // Set status to loading
@@ -27,10 +41,13 @@ const Login = () => {
         .catch((err) => {
           dispatch(setError("Failed to fetch user profile."));
           dispatch(setLoading("failed")); // Set status to failed
-          console.error("Error fetching profile data:", err);
+          // console.error("Error fetching profile data:", err);
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          navigate("/login");
         });
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, location.search]);
 
   return (
     <div

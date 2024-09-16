@@ -1,76 +1,106 @@
 import API_ENDPOINTS from "./apiEndpoints";
 
-// All the API services
+// Helper function to handle the response
 const handleResponse = async (response) => {
+  const jsonResponse = await response.json();
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Something went wrong");
+    const error = new Error(jsonResponse.message || "Something went wrong");
+    error.status = response.status;
+    throw error;
   }
-  return response.json();
+
+  return jsonResponse;
+};
+
+// Generic function to perform fetch requests
+// Update apiRequest function
+const apiRequest = async (
+  url,
+  method,
+  token,
+  body = null,
+  isFormData = false
+) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const options = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    options.body = isFormData ? body : JSON.stringify(body);
+  }
+
+  const response = await fetch(url, options);
+  const jsonResponse = await handleResponse(response);
+
+  // Handle 403 error and refresh token if necessary
+  if (response.status === 403) {
+    throw new Error("Token expired");
+  }
+
+  return jsonResponse;
 };
 
 // Fetch user profile
 const fetchUserProfile = async (token) => {
-  try {
-    const response = await fetch(API_ENDPOINTS.USERS.PROFILE, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    // console.log(response);
-    if (response.ok) {
-      const profileData = await response.json();
-      return profileData;
-    } else {
-      throw new Error("Failed to fetch user profile");
-    }
-  } catch (error) {
-    console.error("Failed to fetch user profile:", error);
-    throw error;
-  }
+  // console.log({ token });
+  return apiRequest(API_ENDPOINTS.USERS.PROFILE, "GET", token);
 };
 
-// Complete profile
+// Complete user profile
 const completeProfile = async (token, profileData) => {
-  try {
-    const response = await fetch(API_ENDPOINTS.USERS.UPDATE_PROFILE, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json", // Set Content-Type header
-      },
-      body: JSON.stringify({ ...profileData, isProfileComplete: true }), // Stringify the JSON body
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    // return await response.json(); // Return the parsed JSON response
-  } catch (error) {
-    console.error("Failed to complete profile:", error);
-    throw error;
-  }
+  const body = { ...profileData, isProfileComplete: true };
+  return apiRequest(API_ENDPOINTS.USERS.UPDATE_PROFILE, "PUT", token, body);
 };
 
-// Profile picture
+// Update profile picture
 const updateProfilePicture = async (token, formData) => {
-  try {
-    const response = await fetch(API_ENDPOINTS.USERS.UPDATE_PROFILE_PIC, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData, // Send the raw file data
-    });
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to update profile picture:", error);
-    throw error;
-  }
+  // No need for 'Content-Type' here as we are sending FormData
+  return apiRequest(
+    API_ENDPOINTS.USERS.UPDATE_PROFILE_PIC,
+    "PUT",
+    token,
+    formData,
+    true
+  );
 };
 
-export { fetchUserProfile, completeProfile, updateProfilePicture };
+// Refresh access token
+const refreshAccessToken = async (refreshToken) => {
+  const body = { refreshToken };
+  const response = await apiRequest(
+    API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+    "POST",
+    null,
+    body
+  );
+  // console.log(response);
+  return response; // Expect { accessToken, refreshToken }
+};
+
+const uploadResource = async (token, formData) => {
+  return apiRequest(
+    API_ENDPOINTS.RESOURCES.UPLOAD,
+    "POST",
+    token,
+    formData,
+    true
+  );
+};
+
+export {
+  fetchUserProfile,
+  completeProfile,
+  updateProfilePicture,
+  refreshAccessToken,
+  uploadResource,
+};

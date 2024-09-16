@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import CompleteRegistration from "./CompleteRegistration";
-import Resources from "./Resources";
+// import Resources from "./Resources";
+import UploadResource from "./UploadResource";
 import store from "./app/store";
 import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
@@ -39,7 +40,7 @@ root.render(
             path="/profile-completion"
             element={<CompleteRegistration />}
           />
-          <Route path="/resources" element={<Resources />} />
+          <Route path="/resources" element={<UploadResource />} />
         </Routes>
       </Router>
     </Provider>

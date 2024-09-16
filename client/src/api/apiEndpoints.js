@@ -8,6 +8,7 @@ const API_ENDPOINTS = {
     // LOGIN: `${BASE_URL}/auth/login`,
     // REGISTER: `${BASE_URL}/auth/register`,
     COMPLETE_PROFILE: `${BASE_URL}/auth/register/complete-profile`,
+    REFRESH_TOKEN: `${BASE_URL}/auth/refresh-token`,
   },
   USERS: {
     PROFILE: `${BASE_URL}/v2/users/profile`,

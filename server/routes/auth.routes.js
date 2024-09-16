@@ -1,17 +1,20 @@
 import express from "express";
-import { completeRegistration } from "../controllers/auth.controllers.js";
-
 import passport from "passport";
 import jwt from "jsonwebtoken";
-
+import {
+  completeRegistration,
+  refreshTokenHandler,
+} from "../controllers/auth.controllers.js";
 import { authenticateJWT } from "../middlewares/auth.js";
 
 const router = express.Router();
 
+// Route for Google authentication
 router
   .route("/google")
   .get(passport.authenticate("google", { scope: ["profile", "email"] }));
 
+// Callback route after Google authentication
 router.route("/google/callback").get(
   passport.authenticate("google", {
     session: false,
@@ -22,28 +25,40 @@ router.route("/google/callback").get(
       return res.status(401).json({ message: "Invalid domain" });
     }
 
-    // Create JWT token
-    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+    // console.log(req.user);
+    // Create access token
+    const accessToken = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h", // Access token valid for 1 hour
     });
 
-    // Set the token as an HTTP-only cookie
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
-    // });
+    // console.log({ accessToken });
 
-    // Redirect to frontend
-    // res.json({ token });
-    res.redirect(`${process.env.GOOGLE_SUCCESS_REDIRECT}?token=${token}`);
+    // Create refresh token
+    const refreshToken = jwt.sign(
+      { id: req.user._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d", // Refresh token valid for 7 days
+      }
+    );
+
+    console.log({ refreshToken });
+
+    // Store refresh token in the database if needed
+
+    // Redirect to frontend with tokens
+    res.redirect(
+      `${process.env.GOOGLE_SUCCESS_REDIRECT}?accessToken=${accessToken}&refreshToken=${refreshToken}`
+    );
   }
 );
 
-// router.route("/login").post(login);
+// Route for completing user registration
 router
   .route("/register/complete-profile")
   .put(authenticateJWT, completeRegistration);
-// router.route("/register").post(initialRegister);
+
+// Route for refreshing tokens
+router.post("/refresh-token", refreshTokenHandler);
 
 export default router;

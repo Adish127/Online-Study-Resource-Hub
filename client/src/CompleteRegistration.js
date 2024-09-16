@@ -30,7 +30,7 @@ const CompleteRegistration = () => {
   const [error, setErrorState] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
 
     if (!token) {
       navigate("/login");
@@ -108,7 +108,7 @@ const CompleteRegistration = () => {
     setLoadingState(true);
     setErrorState(null);
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken");
       await completeProfile(token, profileData);
 
       if (profileData.profilePictureFile) {

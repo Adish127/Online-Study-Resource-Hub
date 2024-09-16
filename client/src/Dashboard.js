@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
-import { fetchUserProfile } from "./api/apiServices";
+import { fetchUserProfile, refreshAccessToken } from "./api/apiServices";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
@@ -17,38 +17,64 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const handleTokenManagement = async () => {
+      let token = localStorage.getItem("accessToken");
+      let refreshToken = localStorage.getItem("refreshToken");
 
-    if (!token) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlToken = urlParams.get("token");
+      if (!token) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get("accessToken");
+        const urlRefreshToken = urlParams.get("refreshToken");
 
-      if (urlToken) {
-        localStorage.setItem("token", urlToken);
-        setPopup({
-          visible: true,
-          message: "Welcome",
-          type: "success",
-        });
-        navigate("/dashboard", { replace: true });
-      } else {
-        navigate("/login");
-        return;
+        if (urlToken) {
+          localStorage.setItem("accessToken", urlToken);
+          if (urlRefreshToken) {
+            localStorage.setItem("refreshToken", urlRefreshToken);
+          }
+          setPopup({
+            visible: true,
+            message: "Welcome",
+            type: "success",
+          });
+          navigate("/dashboard", { replace: true });
+        } else {
+          navigate("/login");
+          return;
+        }
       }
-    }
 
-    if (!userProfile && userStatus === "idle") {
-      dispatch(setLoading("loading"));
-      fetchUserProfile(token)
-        .then((response) => {
+      if (!userProfile && userStatus === "idle") {
+        dispatch(setLoading("loading"));
+        try {
+          const response = await fetchUserProfile(token);
           dispatch(setUserProfile(response));
           dispatch(setLoading("succeeded"));
-        })
-        .catch((err) => {
-          dispatch(setError("Failed to fetch user profile."));
-          dispatch(setLoading("failed"));
-        });
-    }
+        } catch (err) {
+          if (err.message === "Token expired") {
+            // Token might be expired, try refreshing
+            try {
+              // const refreshTok = userProfile?.refreshToken;
+              const newTokens = await refreshAccessToken(refreshToken);
+              localStorage.setItem("accessToken", newTokens.accessToken);
+              // localStorage.setItem("refreshToken", newTokens.refreshToken);
+              const response = await fetchUserProfile(newTokens.accessToken);
+              dispatch(setUserProfile(response));
+              dispatch(setLoading("succeeded"));
+            } catch (refreshErr) {
+              dispatch(setError("Failed to refresh token."));
+              dispatch(setLoading("failed"));
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              navigate("/login");
+            }
+          } else {
+            dispatch(setError("Failed to fetch user profile."));
+            dispatch(setLoading("failed"));
+          }
+        }
+      }
+    };
+    handleTokenManagement();
   }, [dispatch, navigate, userProfile, userStatus]);
 
   useEffect(() => {
@@ -58,7 +84,8 @@ const Dashboard = () => {
   }, [userProfile, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     dispatch(setUserProfile(null)); // Clear the user profile from Redux store
     navigate("/login"); // Redirect to login page
   };
