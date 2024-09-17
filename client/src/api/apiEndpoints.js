@@ -20,6 +20,7 @@ const API_ENDPOINTS = {
     USER: (id) => `${BASE_URL}/v2/users/${id}`,
   },
   RESOURCES: {
+    MY_RESOURCES: `${BASE_URL}/v2/resources/my-resources`,
     BROWSE: `${BASE_URL}/v2/resources/browse`,
     UPLOAD: `${BASE_URL}/v2/resources/upload`,
     UPDATE: (id) => `${BASE_URL}/v2/resources/update/${id}`,

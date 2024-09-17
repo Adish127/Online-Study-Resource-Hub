@@ -7,6 +7,7 @@ import Login from "./Login";
 import CompleteRegistration from "./CompleteRegistration";
 // import Resources from "./Resources";
 import UploadResource from "./UploadResource";
+import MyResources from "./MyResources";
 import store from "./app/store";
 import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
@@ -40,7 +41,8 @@ root.render(
             path="/profile-completion"
             element={<CompleteRegistration />}
           />
-          <Route path="/resources" element={<UploadResource />} />
+          <Route path="/resources" element={<MyResources />} />
+          <Route path="/resources/upload" element={<UploadResource />} />
         </Routes>
       </Router>
     </Provider>

@@ -97,10 +97,20 @@ const uploadResource = async (token, formData) => {
   );
 };
 
+const fetchUserResources = async (token) => {
+  return apiRequest(API_ENDPOINTS.RESOURCES.MY_RESOURCES, "GET", token);
+};
+
+const fetchAllTags = async (token) => {
+  return apiRequest(API_ENDPOINTS.TAGS.BROWSE, "GET", token);
+};
+
 export {
   fetchUserProfile,
   completeProfile,
   updateProfilePicture,
   refreshAccessToken,
   uploadResource,
+  fetchUserResources,
+  fetchAllTags,
 };

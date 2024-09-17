@@ -11,12 +11,14 @@ import {
   manageResourceAccess,
   browseResources,
   likeResource,
+  getMyResources,
 } from "../controllers/resource.controllers.js";
 import { authenticateJWT, verifyAdmin } from "../middlewares/auth.js";
 import upload from "../middlewares/multer.js";
 
 const router = express.Router();
 
+router.route("/my-resources").get(authenticateJWT, getMyResources);
 router.route("/browse").get(authenticateJWT, browseResources);
 router
   .route("/upload")

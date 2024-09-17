@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
-import { fetchUserProfile, refreshAccessToken } from "./api/apiServices";
+import { setResources } from "./features/resourceSlice";
+import {
+  fetchUserProfile,
+  refreshAccessToken,
+  fetchUserResources,
+} from "./api/apiServices";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
@@ -14,6 +19,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector((state) => state.user.profile);
   const userStatus = useSelector((state) => state.user.status);
+  const userResources = useSelector((state) => state.resource.resources);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,6 +55,8 @@ const Dashboard = () => {
           const response = await fetchUserProfile(token);
           dispatch(setUserProfile(response));
           dispatch(setLoading("succeeded"));
+          const userResources = await fetchUserResources(token);
+          dispatch(setResources(userResources));
         } catch (err) {
           if (err.message === "Token expired") {
             // Token might be expired, try refreshing
@@ -60,6 +68,10 @@ const Dashboard = () => {
               const response = await fetchUserProfile(newTokens.accessToken);
               dispatch(setUserProfile(response));
               dispatch(setLoading("succeeded"));
+              const userResources = await fetchUserResources(
+                newTokens.accessToken
+              );
+              dispatch(setResources(userResources));
             } catch (refreshErr) {
               dispatch(setError("Failed to refresh token."));
               dispatch(setLoading("failed"));
@@ -124,6 +136,13 @@ const Dashboard = () => {
             <div className="stat-item">
               <h2>Resources</h2>
               <p>Manage your resources here.</p>
+              {userResources.length > 0 && (
+                <ul>
+                  {userResources.map((resource) => (
+                    <li key={resource._id}>{resource.fileName}</li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="stat-item">
               <h2>Study Groups</h2>
