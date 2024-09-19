@@ -101,6 +101,10 @@ const fetchUserResources = async (token) => {
   return apiRequest(API_ENDPOINTS.RESOURCES.MY_RESOURCES, "GET", token);
 };
 
+const browseResources = async (token) => {
+  return apiRequest(API_ENDPOINTS.RESOURCES.BROWSE, "GET", token);
+};
+
 const fetchAllTags = async (token) => {
   return apiRequest(API_ENDPOINTS.TAGS.BROWSE, "GET", token);
 };
@@ -112,5 +116,6 @@ export {
   refreshAccessToken,
   uploadResource,
   fetchUserResources,
+  browseResources,
   fetchAllTags,
 };

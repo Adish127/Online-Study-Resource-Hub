@@ -75,6 +75,10 @@ const MyResources = () => {
     navigate("/resources/upload", { replace: true });
   };
 
+  const handleBrowseResources = () => {
+    navigate("/resources/browse", { replace: true });
+  };
+
   return (
     <div className="my-resources-container">
       <h2>My Resources</h2>
@@ -82,6 +86,11 @@ const MyResources = () => {
       {/* Upload Resource Button */}
       <button className="upload-resource-btn" onClick={handleUploadResource}>
         Upload Resource
+      </button>
+
+      {/* Browse Resources Button */}
+      <button className="browse-resource-btn" onClick={handleBrowseResources}>
+        Browse Resources
       </button>
 
       <div className="view-toggle">

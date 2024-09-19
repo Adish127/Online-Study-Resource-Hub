@@ -11,6 +11,7 @@ import MyResources from "./MyResources";
 import store from "./app/store";
 import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
+import BrowseResources from "./BrowseResources";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -43,6 +44,7 @@ root.render(
           />
           <Route path="/resources" element={<MyResources />} />
           <Route path="/resources/upload" element={<UploadResource />} />
+          <Route path="/resources/browse" element={<BrowseResources />} />
         </Routes>
       </Router>
     </Provider>
