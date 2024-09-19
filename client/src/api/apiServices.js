@@ -14,7 +14,6 @@ const handleResponse = async (response) => {
 };
 
 // Generic function to perform fetch requests
-// Update apiRequest function
 const apiRequest = async (
   url,
   method,
@@ -52,7 +51,6 @@ const apiRequest = async (
 
 // Fetch user profile
 const fetchUserProfile = async (token) => {
-  // console.log({ token });
   return apiRequest(API_ENDPOINTS.USERS.PROFILE, "GET", token);
 };
 
@@ -64,7 +62,6 @@ const completeProfile = async (token, profileData) => {
 
 // Update profile picture
 const updateProfilePicture = async (token, formData) => {
-  // No need for 'Content-Type' here as we are sending FormData
   return apiRequest(
     API_ENDPOINTS.USERS.UPDATE_PROFILE_PIC,
     "PUT",
@@ -83,10 +80,10 @@ const refreshAccessToken = async (refreshToken) => {
     null,
     body
   );
-  // console.log(response);
   return response; // Expect { accessToken, refreshToken }
 };
 
+// Upload resource
 const uploadResource = async (token, formData) => {
   return apiRequest(
     API_ENDPOINTS.RESOURCES.UPLOAD,
@@ -97,12 +94,54 @@ const uploadResource = async (token, formData) => {
   );
 };
 
+// Fetch user's uploaded resources
 const fetchUserResources = async (token) => {
   return apiRequest(API_ENDPOINTS.RESOURCES.MY_RESOURCES, "GET", token);
 };
 
+// Fetch all tags
 const fetchAllTags = async (token) => {
   return apiRequest(API_ENDPOINTS.TAGS.BROWSE, "GET", token);
+};
+
+// **New Methods for View Resource Page Integration**
+
+// Fetch a specific resource by ID along with its details
+// const fetchResourceById = async (token, resourceId) => {
+//   return apiRequest(
+//     `${API_ENDPOINTS.RESOURCES.DETAILS}/${resourceId}`,
+//     "GET",
+//     token
+//   );
+// };
+
+// Fetch comments for a specific resource by its ID
+// const fetchCommentsForResource = async (token, resourceId) => {
+//   return apiRequest(
+//     `${API_ENDPOINTS.COMMENTS.BY_RESOURCE}/${resourceId}`,
+//     "GET",
+//     token
+//   );
+// };
+
+// Add a new comment to a specific resource
+const addCommentToResource = async (token, resourceId, commentText) => {
+  const body = { text: commentText };
+  return apiRequest(
+    `${API_ENDPOINTS.COMMENTS.ADD}/${resourceId}`,
+    "POST",
+    token,
+    body
+  );
+};
+
+// Delete a comment by its ID
+const deleteComment = async (token, commentId) => {
+  return apiRequest(
+    `${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`,
+    "DELETE",
+    token
+  );
 };
 
 export {
@@ -113,4 +152,8 @@ export {
   uploadResource,
   fetchUserResources,
   fetchAllTags,
+  fetchResourceById, // Newly added for fetching a resource by ID
+  fetchCommentsForResource, // Newly added for fetching comments
+  addCommentToResource, // Newly added for adding comments
+  deleteComment, // Newly added for deleting comments
 };
