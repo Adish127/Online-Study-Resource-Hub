@@ -1,32 +1,94 @@
-/* Header.css */
+/* Header container */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #007bff;
-  color: white;
   padding: 15px 30px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #34495e;
+  color: #ecf0f1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo styling */
 .logo {
-  font-size: 1.5em;
+  font-size: 1.6rem;
   font-weight: bold;
+  color: #1abc9c;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.user-info {
+/* Right-side container (notifications, profile picture) */
+.header-right {
   display: flex;
   align-items: center;
+}
+
+/* Notification container */
+.notification-container {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+/* Notification bell icon */
+.notification-icon {
+  font-size: 1.5rem;
+  color: #ecf0f1;
+  transition: color 0.3s;
+}
+
+/* Bell icon hover effect */
+.notification-icon:hover {
+  color: #1abc9c;
+}
+
+/* Notification popup styling */
+.notification-popup {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background-color: #2c3e50;
+  border: 1px solid #1abc9c;
+  border-radius: 8px;
+  width: 220px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  padding: 10px;
+  color: #ecf0f1;
+}
+
+/* Notification items */
+.notification-item {
+  padding: 8px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #34495e;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+/* Hover effect on notification items */
+.notification-item:hover {
+  background-color: #1abc9c;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Profile picture */
+.profile-link {
+  margin-left: 15px;
 }
 
 .profile-picture-small {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
+  border: 2px solid #1abc9c;
+  transition: transform 0.3s;
 }
 
-.user-name {
-  font-weight: bold;
+.profile-picture-small:hover {
+  transform: scale(1.1);
 }

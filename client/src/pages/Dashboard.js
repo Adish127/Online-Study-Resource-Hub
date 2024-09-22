@@ -9,7 +9,7 @@ import {
   fetchUserResources,
 } from "../api/apiServices";
 import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Popup from "../components/Popup";
 import "./Dashboard.css";
@@ -119,7 +119,7 @@ const Dashboard = () => {
       <Header userProfile={userProfile} />
 
       <div className="main-container">
-        <Sidebar />
+        <Navbar />
 
         <main className="main-content">
           <section className="welcome-section">

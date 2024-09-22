@@ -208,7 +208,6 @@ const Resources = () => {
   return (
     <div className="resources-container">
       <h2>Browse Resources</h2>
-
       {/* Checkbox for "View My Resources" */}
       <div className="view-my-resources">
         <label>
@@ -220,7 +219,6 @@ const Resources = () => {
           View My Resources
         </label>
       </div>
-
       {/* Search and Filter Bars */}
       <div className="search-filter-container">
         <input
@@ -242,6 +240,15 @@ const Resources = () => {
             </option>
           ))}
         </select>
+      </div>
+      {/* Upload Resource */}
+      <div className="upload-resource">
+        <button
+          onClick={() => navigate("/resources/upload")}
+          className="upload-button"
+        >
+          Upload Resource
+        </button>
       </div>
 
       {/* Display Resources */}
@@ -276,7 +283,6 @@ const Resources = () => {
           <div>No resources found</div>
         )}
       </div>
-
       {/* Render user resources in a modal if checkbox is checked */}
       {showMyResources && renderUserResources()}
     </div>

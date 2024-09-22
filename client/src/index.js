@@ -11,6 +11,7 @@ import { setUserProfile, setLoading, setError } from "./features/userSlice";
 
 import Resources from "./pages/Resources";
 import ViewResource from "./pages/ViewResource";
+import UploadResource from "./pages/UploadResource";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -46,6 +47,7 @@ root.render(
             path="/resources/view/:resourceId"
             element={<ViewResource />}
           />
+          <Route path="/resources/upload" element={<UploadResource />} />
         </Routes>
       </Router>
     </Provider>

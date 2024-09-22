@@ -1,0 +1,50 @@
+/* Container to center the login content */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f4f8; /* Light background */
+}
+
+/* Styling the login box */
+.login-box {
+  text-align: center;
+  padding: 40px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  width: 300px;
+}
+
+/* Login title styling */
+.login-title {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #333;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+}
+
+/* Subtitle styling */
+.login-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Button styling */
+.login-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #4285f4; /* Google blue */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.login-button:hover {
+  background-color: #357ae8; /* Darker blue on hover */
+}

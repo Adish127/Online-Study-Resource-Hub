@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserProfile, setLoading, setError } from "../features/userSlice";
 import { fetchUserProfile } from "../api/apiServices"; // Import your API service directly
+import "./Login.css"; // Import the external CSS file
 
 const Login = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Login = () => {
         .catch((err) => {
           dispatch(setError("Failed to fetch user profile."));
           dispatch(setLoading("failed")); // Set status to failed
-          // console.error("Error fetching profile data:", err);
+          // Clear tokens and navigate to login page
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           navigate("/login");
@@ -50,21 +51,13 @@ const Login = () => {
   }, [dispatch, navigate, location.search]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <div style={{ textAlign: "center" }}>
-        <h1>Login</h1>
-        <p>Welcome! Please login using your Google account.</p>
-        <button
-          onClick={handleGoogleLogin}
-          style={{ padding: "10px 20px", fontSize: "16px" }}
-        >
+    <div className="login-container">
+      <div className="login-box">
+        <h1 className="login-title">Login</h1>
+        <p className="login-subtitle">
+          Welcome! Please login using your Google account.
+        </p>
+        <button className="login-button" onClick={handleGoogleLogin}>
           Login with Google
         </button>
       </div>
