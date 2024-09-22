@@ -28,7 +28,7 @@ const API_ENDPOINTS = {
     SEARCH: `${BASE_URL}/v2/resources/search`,
     UPDATE_ACCESS: (id) => `${BASE_URL}/v2/resources/update-access/${id}`,
     LIKE: (id) => `${BASE_URL}/v2/resources/like/${id}`,
-
+    VIEW: (id) => `${BASE_URL}/v2/resources/view/${id}`,
     // Admin
     RESOURCES: `${BASE_URL}/v2/resources`,
     RESOURCE: (id) => `${BASE_URL}/v2/resources/${id}`,

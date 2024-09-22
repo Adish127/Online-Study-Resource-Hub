@@ -12,6 +12,7 @@ import {
   browseResources,
   likeResource,
   getMyResources,
+  viewResource,
 } from "../controllers/resource.controllers.js";
 import { authenticateJWT, verifyAdmin } from "../middlewares/auth.js";
 import upload from "../middlewares/multer.js";
@@ -28,7 +29,8 @@ router
   .put(authenticateJWT, upload.single("file"), updateResourceFile);
 router.route("/delete/:id").delete(authenticateJWT, deleteResourceFile);
 
-router.route("/search").post(authenticateJWT, searchAndFilterResources);
+router.route("/search").get(authenticateJWT, searchAndFilterResources);
+router.route("/view/:id").get(authenticateJWT, viewResource);
 router.route("/update-access/:id").put(authenticateJWT, manageResourceAccess);
 router.route("/like/:id").put(authenticateJWT, likeResource);
 

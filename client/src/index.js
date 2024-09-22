@@ -6,12 +6,15 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import CompleteRegistration from "./CompleteRegistration";
 // import Resources from "./Resources";
-import UploadResource from "./UploadResource";
-import MyResources from "./MyResources";
+// import UploadResource from "./UploadResource";
+// import MyResources from "./MyResources";
 import store from "./app/store";
 import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
-import BrowseResources from "./BrowseResources";
+// import BrowseResources from "./BrowseResources";
+import Resources from "./Resources";
+// import ViewFileDetails from "./ViewResource";
+import ViewResource from "./ViewResource";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -42,9 +45,11 @@ root.render(
             path="/profile-completion"
             element={<CompleteRegistration />}
           />
-          <Route path="/resources" element={<MyResources />} />
-          <Route path="/resources/upload" element={<UploadResource />} />
-          <Route path="/resources/browse" element={<BrowseResources />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route
+            path="/resources/view/:resourceId"
+            element={<ViewResource />}
+          />
         </Routes>
       </Router>
     </Provider>

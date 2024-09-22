@@ -99,6 +99,8 @@ const UploadResource = () => {
       formData.append("tags[]", tagId); // Add each tag ID
     });
 
+    console.log(formData.get("tags[]"));
+
     try {
       // Call the uploadResource function and pass the token and formData
       await uploadResource(token, formData); // Pass token and formData to API function

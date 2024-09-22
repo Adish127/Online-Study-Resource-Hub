@@ -108,37 +108,6 @@ const fetchAllTags = async (token) => {
   return apiRequest(API_ENDPOINTS.TAGS.BROWSE, "GET", token);
 };
 
-// **New Methods for View Resource Page Integration**
-
-// Fetch a specific resource by ID along with its details
-// const fetchResourceById = async (token, resourceId) => {
-//   return apiRequest(
-//     `${API_ENDPOINTS.RESOURCES.DETAILS}/${resourceId}`,
-//     "GET",
-//     token
-//   );
-// };
-
-// Fetch comments for a specific resource by its ID
-// const fetchCommentsForResource = async (token, resourceId) => {
-//   return apiRequest(
-//     `${API_ENDPOINTS.COMMENTS.BY_RESOURCE}/${resourceId}`,
-//     "GET",
-//     token
-//   );
-// };
-
-// Add a new comment to a specific resource
-const addCommentToResource = async (token, resourceId, commentText) => {
-  const body = { text: commentText };
-  return apiRequest(
-    `${API_ENDPOINTS.COMMENTS.ADD}/${resourceId}`,
-    "POST",
-    token,
-    body
-  );
-};
-
 // Delete a comment by its ID
 const deleteComment = async (token, commentId) => {
   return apiRequest(
@@ -148,6 +117,42 @@ const deleteComment = async (token, commentId) => {
   );
 };
 
+// Search and filter resources based on query, category, and access level
+const searchAndFilterResources = async (token, filterParams) => {
+  const { query, category, accessLevel } = filterParams;
+  const queryParams = new URLSearchParams({ query, category, accessLevel });
+  return apiRequest(
+    `${API_ENDPOINTS.RESOURCES.SEARCH}?${queryParams.toString()}`,
+    "GET",
+    token
+  );
+};
+
+const fetchResourceDetails = async (token, id) => {
+  console.log(API_ENDPOINTS.RESOURCES.VIEW(id));
+  return apiRequest(`${API_ENDPOINTS.RESOURCES.VIEW(id)}`, "GET", token);
+};
+
+// Fetch comments for a specific resource by its ID
+const fetchCommentsForResource = async (token, resourceId) => {
+  return apiRequest(
+    `${API_ENDPOINTS.COMMENTS.DISPLAY(resourceId)}`,
+    "GET",
+    token
+  );
+};
+
+// Add a new comment to a specific resource
+const addCommentToResource = async (token, resourceId, commentText) => {
+  const body = { text: commentText };
+  return apiRequest(
+    `${API_ENDPOINTS.COMMENTS.ADD(resourceId)}`,
+    "POST",
+    token,
+    body
+  );
+};
+// Export the new function
 export {
   fetchUserProfile,
   completeProfile,
@@ -157,8 +162,9 @@ export {
   fetchUserResources,
   browseResources,
   fetchAllTags,
-  fetchResourceById, // Newly added for fetching a resource by ID
-  fetchCommentsForResource, // Newly added for fetching comments
-  addCommentToResource, // Newly added for adding comments
-  deleteComment, // Newly added for deleting comments
+  searchAndFilterResources, // Added here
+  addCommentToResource,
+  deleteComment,
+  fetchResourceDetails,
+  fetchCommentsForResource,
 };

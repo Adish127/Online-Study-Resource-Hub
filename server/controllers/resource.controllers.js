@@ -205,6 +205,8 @@ const createResource = async (req, res) => {
     const result = await uploadResourcesToCloudinary(req, req.file.buffer);
     const { description, tags, category, accessLevel } = req.body;
 
+    console.log(req.body);
+
     const newResource = new Resource({
       fileName,
       fileUrl: result.url,
@@ -317,6 +319,21 @@ const likeResource = async (req, res) => {
   }
 };
 
+const viewResource = async (req, res) => {
+  try {
+    const resource = await Resource.findById(req.params.id);
+
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    // Add view count logic
+    res.status(200).json(resource);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // const assignResource = async (req, res) => {};
 
 export {
@@ -331,4 +348,5 @@ export {
   manageResourceAccess,
   likeResource,
   getMyResources,
+  viewResource,
 };
