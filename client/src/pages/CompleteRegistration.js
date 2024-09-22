@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUserProfile, setLoading, setError } from "./features/userSlice";
+import { setUserProfile, setLoading, setError } from "../features/userSlice";
 import {
   completeProfile,
   updateProfilePicture,
   fetchUserProfile,
-} from "./api/apiServices";
-import { setPopup } from "./features/popupsSlice";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import Footer from "./Footer";
+} from "../api/apiServices";
+import { setPopup } from "../features/popupsSlice";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import Footer from "../components/Footer";
 import "./CompleteRegistration.css";
 
 const CompleteRegistration = () => {

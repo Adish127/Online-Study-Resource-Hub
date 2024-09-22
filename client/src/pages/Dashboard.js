@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserProfile, setLoading, setError } from "./features/userSlice";
-import { setResources } from "./features/resourceSlice";
+import { setUserProfile, setLoading, setError } from "../features/userSlice";
+import { setResources } from "../features/resourceSlice";
 import {
   fetchUserProfile,
   refreshAccessToken,
   fetchUserResources,
-} from "./api/apiServices";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import Footer from "./Footer";
-import Popup from "./Popup";
+} from "../api/apiServices";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import Footer from "../components/Footer";
+import Popup from "../components/Popup";
 import "./Dashboard.css";
 
 const Dashboard = () => {

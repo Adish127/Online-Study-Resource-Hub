@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUserProfile, setLoading, setError } from "./features/userSlice";
-import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
+import { setUserProfile, setLoading, setError } from "../features/userSlice";
+import { fetchUserProfile } from "../api/apiServices"; // Import your API service directly
 
 const Login = () => {
   const navigate = useNavigate();

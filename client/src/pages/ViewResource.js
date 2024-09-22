@@ -4,7 +4,7 @@ import {
   fetchResourceDetails,
   fetchCommentsForResource,
   addCommentToResource,
-} from "./api/apiServices"; // Ensure these functions are imported
+} from "../api/apiServices"; // Ensure these functions are imported
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import "./ViewResource.css";
 

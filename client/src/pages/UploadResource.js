@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { uploadResource } from "./api/apiServices"; // Import the API service
+import { uploadResource } from "../api/apiServices"; // Import the API service
 import * as pdfjsLib from "pdfjs-dist/webpack"; // Import pdfjs-dist for PDF rendering
-import TagsDropdown from "./TagsDropdown"; // Import the TagsDropdown component
-import { setPopup } from "./features/popupsSlice"; // Import popup action
+import TagsDropdown from "../components/TagsDropdown"; // Import the TagsDropdown component
+import { setPopup } from "../features/popupsSlice"; // Import popup action
 import "./UploadResource.css";
 
 const UploadResource = () => {

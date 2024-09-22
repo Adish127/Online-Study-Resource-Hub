@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchAllTags } from "./api/apiServices";
+import { fetchAllTags } from "../api/apiServices";
 
 const TagDropdown = ({ onTagSelect }) => {
   const [tags, setTags] = useState([]);

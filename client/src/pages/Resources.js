@@ -3,7 +3,7 @@ import {
   browseResources,
   fetchUserResources,
   fetchAllTags,
-} from "./api/apiServices";
+} from "../api/apiServices";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import { useNavigate } from "react-router-dom";
 import "./Resources.css";
