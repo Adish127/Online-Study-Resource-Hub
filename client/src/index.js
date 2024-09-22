@@ -2,19 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
-import Login from "./Login";
-import CompleteRegistration from "./CompleteRegistration";
-// import Resources from "./Resources";
-// import UploadResource from "./UploadResource";
-// import MyResources from "./MyResources";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import CompleteRegistration from "./pages/CompleteRegistration";
 import store from "./app/store";
 import { fetchUserProfile } from "./api/apiServices"; // Import your API service directly
 import { setUserProfile, setLoading, setError } from "./features/userSlice";
-// import BrowseResources from "./BrowseResources";
-import Resources from "./Resources";
-// import ViewFileDetails from "./ViewResource";
-import ViewResource from "./ViewResource";
+
+import Resources from "./pages/Resources";
+import ViewResource from "./pages/ViewResource";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
