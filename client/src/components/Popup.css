@@ -1,0 +1,29 @@
+.popup-container {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  z-index: 9999;
+}
+
+.popup {
+  padding: 15px;
+  border-radius: 5px;
+  background-color: white; /* Set a white background */
+  color: black; /* Change text color to black */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+.popup-message {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-weight: bold;
+}
