@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBell } from "react-icons/fa"; // Importing bell icon
+import { FaDoorOpen } from "react-icons/fa"; // Importing door icon for logout
 import "./Header.css";
 
-const Header = ({ userProfile, notifications }) => {
+const Header = ({ userProfile, notifications, onLogout }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // State to control profile options popup
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
+  };
+
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
   };
 
   return (
@@ -30,18 +36,27 @@ const Header = ({ userProfile, notifications }) => {
             </div>
           )}
         </div>
-        <div className="user-info">
+        <div className="user-info" onClick={togglePopup}>
           {userProfile && (
-            <Link to="/profile-completion" className="profile-link">
-              <img
-                src={userProfile.profilePicture}
-                alt="Profile"
-                className="profile-picture-small"
-              />
-            </Link>
+            <img
+              src={userProfile.profilePicture}
+              alt="Profile"
+              className="profile-picture-small"
+            />
           )}
         </div>
       </div>
+
+      {showPopup && (
+        <div className="profile-popup">
+          <Link to="/profile-completion" className="profile-option">
+            Profile
+          </Link>
+          <div className="profile-option" onClick={onLogout}>
+            Logout <FaDoorOpen className="logout-icon" />
+          </div>
+        </div>
+      )}
     </header>
   );
 };

@@ -116,7 +116,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Header userProfile={userProfile} />
+      <Header userProfile={userProfile} onLogout={handleLogout} />
 
       <div className="main-container">
         <Navbar />
