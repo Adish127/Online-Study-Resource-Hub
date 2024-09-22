@@ -9,7 +9,7 @@ import {
 } from "../api/apiServices";
 import { setPopup } from "../features/popupsSlice";
 import Header from "../components/Header";
-import Sidebar from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./CompleteRegistration.css";
 
@@ -148,7 +148,7 @@ const CompleteRegistration = () => {
     <div className="complete-registration-container">
       <Header userProfile={userProfile} />
       <div className="complete-registration-main">
-        <Sidebar />
+        <Navbar />
 
         <div className="complete-registration-content">
           {loading && (

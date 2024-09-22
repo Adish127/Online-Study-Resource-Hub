@@ -11,7 +11,7 @@ import {
 import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Popup from "../components/Popup";
+// import Popup from "../components/Popup";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -102,9 +102,9 @@ const Dashboard = () => {
     navigate("/login"); // Redirect to login page
   };
 
-  const handlePopupClose = () => {
-    setPopup({ ...popup, visible: false });
-  };
+  // const handlePopupClose = () => {
+  //   setPopup({ ...popup, visible: false });
+  // };
 
   if (userStatus === "loading") {
     return <div>Loading...</div>;
@@ -116,7 +116,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Header userProfile={userProfile} onLogout={handleLogout} />
+      <Header userProfile={userProfile} />
 
       <div className="main-container">
         <Navbar />
@@ -163,13 +163,13 @@ const Dashboard = () => {
 
       <Footer />
 
-      {popup.visible && (
+      {/* {popup.visible && (
         <Popup
           message={popup.message}
           type={popup.type}
           onClose={handlePopupClose}
         />
-      )}
+      )} */}
     </div>
   );
 };
