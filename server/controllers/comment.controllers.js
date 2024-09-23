@@ -22,7 +22,7 @@ const addComment = async (req, res) => {
     resource.comments.push(comment._id);
     await resource.save();
 
-    res.status(201).json({message: "Comment added"});
+    res.status(201).json({ message: "Comment added" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

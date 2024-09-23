@@ -11,7 +11,7 @@ import {
 import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-// import Popup from "../components/Popup";
+import Popup from "../components/Popup";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -22,6 +22,15 @@ const Dashboard = () => {
   const userResources = useSelector((state) => state.resource.resources);
   const navigate = useNavigate();
 
+  const showPopup = (message, type) => {
+    setPopup({ visible: true, message, type });
+    setTimeout(() => setPopup({ visible: false, message: "", type: "" }), 3000); // Auto-close after 5 seconds
+  };
+
+  const closePopup = () => {
+    setPopup({ visible: false, message: "", type: "" });
+  };
+
   useEffect(() => {
     const handleTokenManagement = async () => {
       let token = localStorage.getItem("accessToken");
@@ -29,19 +38,18 @@ const Dashboard = () => {
 
       if (!token) {
         const urlParams = new URLSearchParams(window.location.search);
+
+        console.log(urlParams);
         const urlToken = urlParams.get("accessToken");
         const urlRefreshToken = urlParams.get("refreshToken");
+
+        console.log({ urlToken, urlRefreshToken });
 
         if (urlToken) {
           localStorage.setItem("accessToken", urlToken);
           if (urlRefreshToken) {
             localStorage.setItem("refreshToken", urlRefreshToken);
           }
-          setPopup({
-            visible: true,
-            message: "Welcome",
-            type: "success",
-          });
           navigate("/dashboard", { replace: true });
         } else {
           navigate("/login");
@@ -55,6 +63,11 @@ const Dashboard = () => {
           const response = await fetchUserProfile(token);
           dispatch(setUserProfile(response));
           dispatch(setLoading("succeeded"));
+          setPopup({
+            visible: true,
+            message: `Welcome, ${response.name}!`,
+            type: "success",
+          });
           const userResources = await fetchUserResources(token);
           dispatch(setResources(userResources));
         } catch (err) {
@@ -102,10 +115,6 @@ const Dashboard = () => {
     navigate("/login"); // Redirect to login page
   };
 
-  // const handlePopupClose = () => {
-  //   setPopup({ ...popup, visible: false });
-  // };
-
   if (userStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -118,6 +127,11 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <Header userProfile={userProfile} />
 
+      {/* Display Popup when there's a failure */}
+      {popup.visible && (
+        <Popup message={popup.message} type={popup.type} onClose={closePopup} />
+      )}
+
       <div className="main-container">
         <Navbar />
 
@@ -127,6 +141,11 @@ const Dashboard = () => {
             <p>
               Here you can manage your resources, view study groups, and more.
             </p>
+            <img
+              src={userProfile.profilePicture}
+              alt="User Avatar"
+              width="50%"
+            />
             <button onClick={handleLogout} className="logout-button">
               Logout
             </button>

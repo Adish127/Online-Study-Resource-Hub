@@ -1,18 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserProfile, setLoading, setError } from "../features/userSlice";
 import { fetchUserProfile } from "../api/apiServices"; // Import your API service directly
+import Popup from "../components/Popup"; // Assuming Popup component is available
 import "./Login.css"; // Import the external CSS file
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Use this to get the tokens from URL params
   const dispatch = useDispatch();
+  const [popup, setPopup] = useState({ visible: false, message: "", type: "" });
 
   const handleGoogleLogin = () => {
     // Redirect to your backend Google OAuth endpoint
     window.location.href = "http://localhost:5001/api/auth/google";
+  };
+
+  const showPopup = (message, type) => {
+    setPopup({ visible: true, message, type });
+    setTimeout(() => setPopup({ visible: false, message: "", type: "" }), 5000); // Auto-close after 5 seconds
+  };
+
+  const closePopup = () => {
+    setPopup({ visible: false, message: "", type: "" });
   };
 
   useEffect(() => {
@@ -45,7 +56,10 @@ const Login = () => {
           // Clear tokens and navigate to login page
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          navigate("/login");
+          showPopup("Login failed. Please try again.", "failure");
+
+          // Wait for some time until the popup is completely shown
+          navigate("/login"); // Redirect to login
         });
     }
   }, [dispatch, navigate, location.search]);
@@ -61,6 +75,11 @@ const Login = () => {
           Login with Google
         </button>
       </div>
+
+      {/* Display Popup when there's a failure */}
+      {popup.visible && (
+        <Popup message={popup.message} type={popup.type} onClose={closePopup} />
+      )}
     </div>
   );
 };

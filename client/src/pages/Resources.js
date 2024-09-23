@@ -158,7 +158,7 @@ const Resources = () => {
               className="close-modal"
               onClick={() => setShowMyResources(false)}
             >
-              Close
+              &times;
             </button>
             <h2>My Resources</h2>
             <div className={`resources-view grid`}>

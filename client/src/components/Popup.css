@@ -1,0 +1,55 @@
+.popup {
+  z-index: 9999; /* Ensure it's on top of other elements */
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  width: 300px; /* Fixed width for the popup */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed; /* Stay fixed at the top */
+  top: 20px; /* Distance from the top */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Shift it back to exactly center */
+}
+
+.popup-message {
+  flex-grow: 1; /* Allow the message to fill the space */
+  font-size: 16px;
+  color: #333; /* Text color */
+  margin: 0; /* Reset margin */
+}
+
+.popup-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.loading-bar-container {
+  width: 100%; /* Full width of the popup */
+  height: 5px; /* Height of the loading bar container */
+  margin-top: 0; /* No margin or padding */
+  border-radius: 0 0 8px 8px; /* Rounded bottom corners to match popup */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.loading-bar {
+  height: 5px; /* Height of the loading bar itself */
+  width: 0%; /* Initial width */
+  animation: loadingAnimation 5s linear forwards; /* Smooth animation over 5 seconds */
+}
+
+@keyframes loadingAnimation {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

@@ -77,10 +77,10 @@ const ViewResource = () => {
     if (newComment) {
       try {
         await addCommentToResource(token, resourceId, newComment);
-        setComments([
-          ...comments,
+        setComments((prevComments) => [
+          ...prevComments,
           { text: newComment, user: { id: "currentUser" } },
-        ]); // Update to reflect the new comment
+        ]);
         setNewComment(""); // Clear input field
       } catch (err) {
         console.error(err);
@@ -94,35 +94,45 @@ const ViewResource = () => {
 
   return (
     <div className="view-resource-container">
-      <h2>{resource.fileName}</h2>
-      <p>{resource.description}</p>
+      <div className="resource-post">
+        <h2>{resource.fileName}</h2>
+        <p>{resource.description}</p>
 
-      {resource.fileUrl.endsWith(".pdf") ? (
-        <div className="pdf-preview">
-          <canvas ref={canvasRef}></canvas>
-        </div>
-      ) : (
-        <div className="image-preview">
-          <img src={resource.fileUrl} alt={resource.fileName} />
-        </div>
-      )}
+        {resource.fileUrl.endsWith(".pdf") ? (
+          <div className="pdf-preview">
+            <canvas ref={canvasRef}></canvas>
+          </div>
+        ) : (
+          <div className="image-preview">
+            <img src={resource.fileUrl} alt={resource.fileName} />
+          </div>
+        )}
 
-      <div className="resource-tags">
-        <h3>Tags:</h3>
-        <p>{resource.tags}</p>
+        <div className="resource-tags">
+          <h3>Tags:</h3>
+          <p>{resource.tags.join(", ")}</p>
+        </div>
+
+        <div className="resource-actions">
+          <button onClick={() => window.open(resource.fileUrl, "_blank")}>
+            Open Resource in New Tab
+          </button>
+        </div>
       </div>
 
       <div className="comments-section">
         <h3>Comments:</h3>
-        <ul>
-          {comments.map((comment) => (
-            <li key={comment._id}>
-              {comment.text} - {comment.user}
+        <ul className="comments-list">
+          {comments.map((comment, index) => (
+            <li key={index} className="comment-item">
+              <div className="comment-content">
+                <strong>{comment.user}</strong>: {comment.text}
+              </div>
             </li>
           ))}
         </ul>
 
-        <form onSubmit={handleCommentSubmit}>
+        <form onSubmit={handleCommentSubmit} className="comment-form">
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -131,12 +141,6 @@ const ViewResource = () => {
           />
           <button type="submit">Submit</button>
         </form>
-      </div>
-
-      <div className="resource-actions">
-        <button onClick={() => window.open(resource.fileUrl, "_blank")}>
-          Open Resource in New Tab
-        </button>
       </div>
     </div>
   );

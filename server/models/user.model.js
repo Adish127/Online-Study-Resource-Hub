@@ -33,6 +33,13 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
+      /*
+      Gender
+      DOB
+      Alternate email
+      Degree
+      Batch
+      */
     },
     profilePicture: {
       type: String,

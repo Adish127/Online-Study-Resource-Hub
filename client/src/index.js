@@ -1,7 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import CompleteRegistration from "./pages/CompleteRegistration";
@@ -36,6 +41,8 @@ root.render(
     <Provider store={store}>
       <Router>
         <Routes>
+          {/* When other routes, redirect to /login */}
+          <Route path="/*" element={<Navigate to={"/login"} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route

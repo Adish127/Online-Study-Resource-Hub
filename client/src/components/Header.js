@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBell } from "react-icons/fa"; // Importing bell icon
-import { FaDoorOpen } from "react-icons/fa"; // Importing door icon for logout
+import {
+  FaBell,
+  FaCaretDown,
+  FaSearch,
+  FaUser,
+  FaDoorOpen,
+} from "react-icons/fa";
 import "./Header.css";
 
 const Header = ({ userProfile, notifications, onLogout }) => {
@@ -19,6 +24,12 @@ const Header = ({ userProfile, notifications, onLogout }) => {
   return (
     <header className="header">
       <div className="logo">Resource Hub</div>
+
+      <div className="header-left">
+        <input type="text" placeholder="Search" className="search-bar" />
+        <FaSearch className="search-icon" />
+      </div>
+
       <div className="header-right">
         <div className="notification-container">
           <FaBell className="notification-icon" onClick={toggleNotifications} />
@@ -36,13 +47,20 @@ const Header = ({ userProfile, notifications, onLogout }) => {
             </div>
           )}
         </div>
-        <div className="user-info" onClick={togglePopup}>
+        <div className="user-info">
           {userProfile && (
-            <img
-              src={userProfile.profilePicture}
-              alt="Profile"
-              className="profile-picture-small"
-            />
+            <>
+              <img
+                src={userProfile.profilePicture}
+                alt="Profile"
+                className="profile-picture-small"
+              />
+              {/* A dropdown when clicking user name along with icon*/}
+              <div className="user-name-dropdown" onClick={togglePopup}>
+                <span className="user-name">{userProfile.name}</span>
+                <FaCaretDown className="dropdown-icon" />
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -50,7 +68,7 @@ const Header = ({ userProfile, notifications, onLogout }) => {
       {showPopup && (
         <div className="profile-popup">
           <Link to="/profile-completion" className="profile-option">
-            Profile
+            Profile <FaUser className="profile-icon" />
           </Link>
           <div className="profile-option" onClick={onLogout}>
             Logout <FaDoorOpen className="logout-icon" />

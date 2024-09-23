@@ -9,21 +9,26 @@ const Navbar = () => {
       <nav>
         <Link to="/dashboard" className="nav-link">
           <FaHome className="nav-icon" />
-          Dashboard
+          <span>Dashboard</span>
         </Link>
-        <Link to="/resources" className="nav-link">
+        {/* <Link to="/resources" className="nav-link">
           <FaBook className="nav-icon" />
-          My Resources
-        </Link>
-        <Link to="/browse-resources" className="nav-link">
+          <span>My Resources</span>
+        </Link> */}
+        <Link to="/resources" className="nav-link">
           <FaSearch className="nav-icon" />
-          Browse Resources
+          <span>Browse Resources</span>
         </Link>
         <Link to="/recent-activities" className="nav-link">
           <FaClock className="nav-icon" />
-          Recent Activities
+          <span>Recent Activities</span>
         </Link>
       </nav>
+
+      {/* Optional Footer for Sidebar */}
+      <div className="navbar-footer">
+        <span>&copy; 2024 Resource Hub</span>
+      </div>
     </aside>
   );
 };
