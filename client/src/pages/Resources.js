@@ -4,29 +4,35 @@ import {
   fetchUserResources,
   fetchAllTags,
 } from "../api/apiServices";
+import { useSelector } from "react-redux";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import { useNavigate } from "react-router-dom";
 import "./Resources.css";
+import Header from "../components/Header";
+import UploadResource from "../pages/UploadResource"; // Import the upload modal
 
 const Resources = () => {
-  const [resources, setResources] = useState([]); // Stores all resources
-  const [filteredResources, setFilteredResources] = useState([]); // Stores resources after filtering
-  const [userResources, setUserResources] = useState([]); // User's personal resources
-  const [tags, setTags] = useState([]); // For storing tags from the database
+  const [resources, setResources] = useState([]);
+  const [filteredResources, setFilteredResources] = useState([]);
+  const [userResources, setUserResources] = useState([]);
+  const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showMyResources, setShowMyResources] = useState(false); // For displaying user resources pop-up
+  const [showMyResources, setShowMyResources] = useState(false);
+  const [isUploadResourceOpen, setIsUploadResourceOpen] = useState(false); // State to handle modal visibility
 
   const token = localStorage.getItem("accessToken");
-  const canvasRefs = useRef([]); // Array to hold refs for each resource's canvas
-  const navigate = useNavigate(); // Use navigate from react-router-dom
+  const canvasRefs = useRef([]);
+  const navigate = useNavigate();
 
-  // State for search and filters
-  const [query, setQuery] = useState(""); // Search query
-  const [category, setCategory] = useState(""); // Filter by category (tag)
-  const [accessLevel] = useState("public"); // Filter only by public access level
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("");
+  const [accessLevel] = useState("public");
 
-  // Fetch tags (categories) from the API
+  const [selectedType, setSelectedType] = useState("");
+
+  const userProfile = useSelector((state) => state.user.profile);
+
   useEffect(() => {
     const loadTags = async () => {
       try {
@@ -36,21 +42,17 @@ const Resources = () => {
         console.error("Failed to load tags", err);
       }
     };
-
     loadTags();
   }, [token]);
 
-  // Fetch public resources initially (browse mode)
   useEffect(() => {
     const fetchResources = async () => {
       setLoading(true);
       try {
         const data = await browseResources(token, { accessLevel: "public" });
         setResources(data);
-        setFilteredResources(data); // Set initial filtered data to all resources
+        setFilteredResources(data);
         setLoading(false);
-
-        // Render PDF thumbnails immediately after fetching
         data.forEach((resource, index) => {
           if (resource.fileUrl.endsWith(".pdf")) {
             renderPDF(resource.fileUrl, index);
@@ -62,25 +64,9 @@ const Resources = () => {
         setLoading(false);
       }
     };
-
     fetchResources();
   }, [token]);
 
-  // Fetch user's personal resources when "View My Resources" is checked
-  const fetchMyResources = async () => {
-    setLoading(true);
-    try {
-      const data = await fetchUserResources(token);
-      setUserResources(data);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load user resources.");
-      setLoading(false);
-    }
-  };
-
-  // Filter resources locally whenever query or category changes
   useEffect(() => {
     const filterResourcesLocally = () => {
       let updatedResources = resources;
@@ -97,22 +83,12 @@ const Resources = () => {
         );
       }
 
-      setFilteredResources(updatedResources); // Update filtered resources
+      setFilteredResources(updatedResources);
     };
 
     filterResourcesLocally();
   }, [query, category, resources]);
 
-  // Handle pop-up for "My Resources"
-  const handleMyResourcesChange = (e) => {
-    const isChecked = e.target.checked;
-    setShowMyResources(isChecked);
-    if (isChecked) {
-      fetchMyResources();
-    }
-  };
-
-  // Render PDF thumbnail
   const renderPDF = async (fileUrl, index) => {
     const loadingTask = pdfjsLib.getDocument(fileUrl);
     try {
@@ -131,7 +107,6 @@ const Resources = () => {
         viewport: viewport,
       };
 
-      // Wait for the render to complete
       await page.render(renderContext).promise;
       console.log("Page rendered");
     } catch (reason) {
@@ -139,87 +114,87 @@ const Resources = () => {
     }
   };
 
-  useEffect(() => {
-    resources.forEach((resource, index) => {
-      if (resource.fileUrl.endsWith(".pdf")) {
-        renderPDF(resource.fileUrl, index);
-      }
-    });
-  }, [resources]);
-
-  // Render user resources when the modal is open
   const renderUserResources = () => {
     return (
       <>
-        <div className="modal-backdrop"></div>
+        <div
+          className="backdrop"
+          onClick={() => setShowMyResources(false)}
+        ></div>
         <div className="my-resources-modal">
-          <div className="modal-content">
-            <button
-              className="close-modal"
-              onClick={() => setShowMyResources(false)}
-            >
-              &times;
-            </button>
-            <h2>My Resources</h2>
-            <div className={`resources-view grid`}>
-              {userResources.length > 0 ? (
-                userResources.map((resource, index) => (
-                  <div
-                    key={resource._id}
-                    className="resource-card"
-                    onClick={() =>
-                      navigate(`/resources/view/${resource._id}`, {
-                        replace: true,
-                      })
-                    } // Navigate to viewResources on card click
-                  >
-                    <div className="resource-thumbnail">
-                      {resource.fileUrl.endsWith(".pdf") ? (
-                        <div className="pdf-preview">
-                          <canvas
-                            ref={(el) => (canvasRefs.current[index] = el)}
-                          ></canvas>
-                        </div>
-                      ) : (
-                        <div>
-                          <img src={resource.fileUrl} alt={resource.fileName} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="resource-details">
-                      <h4>{resource.fileName}</h4>
-                      <p>{resource.description}</p>
-                    </div>
+          <button onClick={() => setShowMyResources(false)}>&times;</button>
+          <h2>My Resources</h2>
+          <div className="resources-view grid">
+            {userResources.length > 0 ? (
+              userResources.map((resource, index) => (
+                <div
+                  key={resource._id}
+                  className="resource-card"
+                  onClick={() =>
+                    navigate(`/resources/view/${resource._id}`, {
+                      replace: true,
+                    })
+                  }
+                >
+                  <div className="resource-thumbnail">
+                    {resource.fileUrl.endsWith(".pdf") ? (
+                      <canvas
+                        ref={(el) => (canvasRefs.current[index] = el)}
+                      ></canvas>
+                    ) : (
+                      <img src={resource.fileUrl} alt={resource.fileName} />
+                    )}
                   </div>
-                ))
-              ) : (
-                <div>No resources found</div>
-              )}
-            </div>
+                  <div className="resource-details">
+                    <h4>{resource.fileName}</h4>
+                    <p>{resource.description}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div>No resources found</div>
+            )}
           </div>
         </div>
       </>
     );
   };
 
+  const handleTypeChange = (e) => {
+    setSelectedType(e.target.value);
+    setCategory(""); // Reset category when type changes
+  };
+
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+  };
+
+  const groupedTagsByType = tags.reduce((acc, tag) => {
+    const { type } = tag;
+    if (!acc[type]) {
+      acc[type] = [];
+    }
+    acc[type].push(tag);
+    return acc;
+  }, {});
+
+  const openUploadResource = () => {
+    setIsUploadResourceOpen(true);
+  };
+
+  const closeUploadResource = () => {
+    setIsUploadResourceOpen(false);
+  };
+
   if (loading) return <div>Loading resources...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="resources-container">
+    <div
+      className={`resources-container ${isUploadResourceOpen ? "blur" : ""}`}
+    >
+      <Header userProfile={userProfile} />
       <h2>Browse Resources</h2>
-      {/* Checkbox for "View My Resources" */}
-      <div className="view-my-resources">
-        <label>
-          <input
-            type="checkbox"
-            checked={showMyResources}
-            onChange={handleMyResourcesChange}
-          />
-          View My Resources
-        </label>
-      </div>
-      {/* Search and Filter Bars */}
       <div className="search-filter-container">
         <input
           type="text"
@@ -228,49 +203,57 @@ const Resources = () => {
           onChange={(e) => setQuery(e.target.value)}
           className="search-bar"
         />
+
+        {/* Dropdown for selecting tag type */}
+        <select
+          value={selectedType}
+          onChange={handleTypeChange}
+          className="filter-bar"
+        >
+          <option value="">Select Type</option>
+          <option value="department">Department</option>
+          <option value="course">Course</option>
+          <option value="branch">Branch</option>
+          <option value="subject">Subject</option>
+        </select>
+
+        {/* Dropdown for selecting tag under the selected type */}
         <select
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={handleCategoryChange}
           className="filter-bar"
         >
           <option value="">All Categories</option>
-          {tags.map((tag) => (
-            <option key={tag._id} value={tag._id}>
-              {tag.name}
-            </option>
-          ))}
+          {groupedTagsByType[selectedType] &&
+            groupedTagsByType[selectedType].map((tag) => (
+              <option key={tag._id} value={tag._id}>
+                {tag.name}
+              </option>
+            ))}
         </select>
       </div>
-      {/* Upload Resource */}
+
       <div className="upload-resource">
-        <button
-          onClick={() => navigate("/resources/upload")}
-          className="upload-button"
-        >
+        <button onClick={openUploadResource} className="upload-button">
           Upload Resource
         </button>
       </div>
 
-      {/* Display Resources */}
-      <div className={`resources-view grid`}>
+      <div className="resources-view grid">
         {filteredResources.length > 0 ? (
           filteredResources.map((resource, index) => (
             <div
               key={resource._id}
               className="resource-card"
-              onClick={() => navigate(`/resources/view/${resource._id}`)} // Navigate to viewResources on card click
+              onClick={() => navigate(`/resources/view/${resource._id}`)}
             >
               <div className="resource-thumbnail">
                 {resource.fileUrl.endsWith(".pdf") ? (
-                  <div className="pdf-preview">
-                    <canvas
-                      ref={(el) => (canvasRefs.current[index] = el)}
-                    ></canvas>
-                  </div>
+                  <canvas
+                    ref={(el) => (canvasRefs.current[index] = el)}
+                  ></canvas>
                 ) : (
-                  <div>
-                    <img src={resource.fileUrl} alt={resource.fileName} />
-                  </div>
+                  <img src={resource.fileUrl} alt={resource.fileName} />
                 )}
               </div>
               <div className="resource-details">
@@ -283,8 +266,10 @@ const Resources = () => {
           <div>No resources found</div>
         )}
       </div>
-      {/* Render user resources in a modal if checkbox is checked */}
+
       {showMyResources && renderUserResources()}
+
+      {isUploadResourceOpen && <UploadResource onClose={closeUploadResource} />}
     </div>
   );
 };

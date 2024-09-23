@@ -17,10 +17,11 @@ const UploadResource = () => {
   const [previewSrc, setPreviewSrc] = useState(""); // For image and PDF previews
   const [selectedTags, setSelectedTags] = useState([]); // Array to store selected tag IDs
   const [loading, setLoading] = useState(false); // Loading state
+  const [isDragOver, setIsDragOver] = useState(false); // Dragging state
   const token = localStorage.getItem("accessToken");
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
+    const selectedFile = e.target.files[0] || e.dataTransfer.files[0];
     if (selectedFile) {
       setFile(selectedFile);
       setError("");
@@ -99,8 +100,6 @@ const UploadResource = () => {
       formData.append("tags[]", tagId); // Add each tag ID
     });
 
-    console.log(formData.get("tags[]"));
-
     try {
       // Call the uploadResource function and pass the token and formData
       await uploadResource(token, formData); // Pass token and formData to API function
@@ -137,8 +136,31 @@ const UploadResource = () => {
 
       <form onSubmit={handleUpload}>
         <div className="form-group">
-          <label htmlFor="file">Choose file:</label>
-          <input type="file" id="file" onChange={handleFileChange} required />
+          <label className="file-input-label" htmlFor="file-input">
+            Choose file or drag and drop
+          </label>
+          <input
+            type="file"
+            id="file-input"
+            onChange={handleFileChange}
+            required
+            style={{ display: "none" }}
+          />
+          <div
+            className={`drag-drop-area ${isDragOver ? "drag-over" : ""}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+              handleFileChange(e);
+            }}
+          >
+            <p>Drag and drop your file here, or click to select a file.</p>
+          </div>
         </div>
 
         <div className="form-group">
@@ -201,7 +223,8 @@ const UploadResource = () => {
       {previewSrc && (
         <div className="file-preview">
           <h4>File Preview:</h4>
-          {file.type.startsWith("image/") || file.type === "application/pdf" ? (
+          {file?.type.startsWith("image/") ||
+          file?.type === "application/pdf" ? (
             <img src={previewSrc} alt="File Preview" />
           ) : (
             <p>Preview not available for this file type.</p>

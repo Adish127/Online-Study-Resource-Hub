@@ -1,39 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { fetchAllTags } from "../api/apiServices";
+import "./TagsDropdown.css"; // Import CSS for pill styling
 
 const TagDropdown = ({ onTagSelect }) => {
   const [tags, setTags] = useState([]);
   const [selectedTagIds, setSelectedTagIds] = useState([]);
 
   useEffect(() => {
-    // Fetch tags from an API or hardcode them
     const fetchTags = async () => {
-      // Simulate fetch
-      const token = localStorage.getItem("accessToken").toString(); // Replace this with how you manage tokens
-      const response = await fetchAllTags(token);
-      setTags(response);
+      const token = localStorage.getItem("accessToken").toString(); // Retrieve token from localStorage
+      const response = await fetchAllTags(token); // Fetch tags
+      setTags(response); // Store tags in state
     };
 
     fetchTags();
   }, []);
 
-  const handleTagChange = (e) => {
-    const selectedIds = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedTagIds(selectedIds);
-    onTagSelect(selectedIds); // Pass selected IDs to parent component
+  // Group tags by their 'type' (or any other categorization)
+  const groupedTagsByType = tags.reduce((acc, tag) => {
+    const { type } = tag;
+    if (!acc[type]) acc[type] = [];
+    acc[type].push(tag);
+    return acc;
+  }, {});
+
+  // Toggle selection of a tag
+  const handleTagClick = (tagId) => {
+    if (selectedTagIds.includes(tagId)) {
+      setSelectedTagIds(selectedTagIds.filter((id) => id !== tagId)); // Deselect tag
+    } else {
+      setSelectedTagIds([...selectedTagIds, tagId]); // Select tag
+    }
+    onTagSelect(selectedTagIds); // Notify parent component of selection
   };
 
   return (
-    <select multiple={true} onChange={handleTagChange}>
-      {tags.map((tag) => (
-        <option key={tag._id} value={tag._id}>
-          {tag.name}
-        </option>
+    <div className="tag-dropdown-container">
+      {Object.entries(groupedTagsByType).map(([type, tags]) => (
+        <div key={type}>
+          {/* Capitalize type */}
+          <h4>{type}</h4> {/* Type Header */}
+          <div className="tag-group">
+            {tags.map((tag) => (
+              <div
+                key={tag._id}
+                className={`tag-pill ${
+                  selectedTagIds.includes(tag._id) ? "selected" : ""
+                }`}
+                onClick={() => handleTagClick(tag._id)} // Toggle on click
+              >
+                {tag.name}
+              </div>
+            ))}
+          </div>
+        </div>
       ))}
-    </select>
+    </div>
   );
 };
 

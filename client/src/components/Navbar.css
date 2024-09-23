@@ -4,10 +4,10 @@
   top: 60px; /* Start below the header */
   left: 0;
   width: 200px;
-  height: calc(100vh - 60px); /* Adjust height considering the header */
+  height: 100vh; /* Adjust height considering the header */
   background-color: #25323f; /* Dark background for the sidebar */
   color: #fff;
-  padding: 20px 0;
+  padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -26,7 +26,8 @@
   padding: 15px 20px;
   display: flex;
   align-items: center;
-  transition: background-color 0.3s;
+  flex-direction: column;
+  transition: background-color 0.3s ease-in;
 }
 
 .nav-link:hover,
@@ -40,24 +41,24 @@
   font-size: 18px; /* Icon size */
 }
 
-/* Footer styles */
-.navbar-footer {
-  text-align: center;
-  font-size: 14px;
-  color: #bbb;
-  padding: 10px 0;
-  border-top: 1px solid #3b4a57;
-}
-
-.navbar-footer span {
-  display: block;
-}
-
-.navbar-footer a {
-  color: #03a9f4;
+.nav-link {
+  color: #fff;
   text-decoration: none;
+  font-size: 16px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
 }
 
-.navbar-footer a:hover {
-  text-decoration: underline;
+.nav-link:hover,
+.nav-link.active {
+  /* The active link will have the same style as hover */
+  background-color: #1e2d3d; /* Hover background */
+  border-left: 5px solid #03a9f4; /* Highlight on the left */
+}
+
+.nav-icon {
+  margin-right: 10px; /* Space between icon and text */
+  font-size: 18px; /* Icon size */
 }

@@ -32,14 +32,22 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     bio: {
-      type: String,
-      /*
-      Gender
-      DOB
-      Alternate email
-      Degree
-      Batch
-      */
+      gender: {
+        type: String,
+        enum: ["male", "female", "other"],
+      },
+      dob: {
+        type: Date,
+      },
+      alternateEmail: {
+        type: String,
+      },
+      degree: {
+        type: String,
+      },
+      batch: {
+        type: String,
+      },
     },
     profilePicture: {
       type: String,

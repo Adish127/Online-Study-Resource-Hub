@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .popup {
   z-index: 9999; /* Ensure it's on top of other elements */
   padding: 20px;
@@ -53,34 +52,4 @@
   100% {
     width: 100%;
   }
-=======
-.popup-container {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30%;
-  z-index: 9999;
-}
-
-.popup {
-  padding: 15px;
-  border-radius: 5px;
-  background-color: white; /* Set a white background */
-  color: black; /* Change text color to black */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
-}
-
-.popup-message {
-  flex-grow: 1;
-  margin-right: 10px;
-}
-
-.close-icon {
-  cursor: pointer;
-  font-weight: bold;
->>>>>>> 212ffda8ca201a78847554a304caa91e4f4963d5
 }

@@ -1,34 +1,44 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaHome, FaBook, FaClock, FaSearch } from "react-icons/fa"; // Icons
 import "./Navbar.css";
 
 const Navbar = () => {
+  const location = useLocation(); // Get current location
+
   return (
     <aside className="navbar">
       <nav>
-        <Link to="/dashboard" className="nav-link">
+        <Link
+          to="/dashboard"
+          className={`nav-link ${
+            location.pathname === "/dashboard" ? "active" : ""
+          }`}
+        >
           <FaHome className="nav-icon" />
           <span>Dashboard</span>
         </Link>
-        {/* <Link to="/resources" className="nav-link">
-          <FaBook className="nav-icon" />
-          <span>My Resources</span>
-        </Link> */}
-        <Link to="/resources" className="nav-link">
+
+        <Link
+          to="/resources"
+          className={`nav-link ${
+            location.pathname === "/resources" ? "active" : ""
+          }`}
+        >
           <FaSearch className="nav-icon" />
           <span>Browse Resources</span>
         </Link>
-        <Link to="/recent-activities" className="nav-link">
+
+        <Link
+          to="/recent-activities"
+          className={`nav-link ${
+            location.pathname === "/recent-activities" ? "active" : ""
+          }`}
+        >
           <FaClock className="nav-icon" />
           <span>Recent Activities</span>
         </Link>
       </nav>
-
-      {/* Optional Footer for Sidebar */}
-      <div className="navbar-footer">
-        <span>&copy; 2024 Resource Hub</span>
-      </div>
     </aside>
   );
 };

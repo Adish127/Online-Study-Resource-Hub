@@ -142,7 +142,7 @@ const Dashboard = () => {
               Here you can manage your resources, view study groups, and more.
             </p>
             <img
-              src={userProfile.profilePicture}
+              src={userProfile?.profilePicture}
               alt="User Avatar"
               width="50%"
             />

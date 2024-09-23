@@ -1,127 +1,106 @@
-/* Blurred background overlay */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Slight darkening */
-  backdrop-filter: blur(10px); /* Blurring effect */
-  z-index: 999; /* Ensure it's behind the modal */
-}
-
-/* Modal container */
-.my-resources-modal {
-  position: fixed;
-  top: 12.5%;
-  left: 12.5%;
-  width: 75%;
-  height: 75%;
-  background-color: #fff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Ensure it's on top of the blurred background */
-  padding: 20px;
-  overflow-y: auto;
-  border-radius: 10px;
-}
-
-/* Modal content layout */
-.modal-content {
-  position: relative;
-  height: 100%;
+.resources-wrapper {
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
-/* Close button for the modal */
-.close-modal {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
+.resources-body {
+  display: flex;
+  flex-grow: 1;
 }
-/* Resources.css */
 
-.resources-container {
+.resources-content {
+  flex-grow: 1;
   padding: 20px;
+  overflow-y: auto;
 }
 
-.resources-view {
+.search-filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.upload-resource {
+  margin-bottom: 20px;
+}
+
+.resources-view.grid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(200px, 1fr)
-  ); /* Responsive grid */
-  gap: 15px; /* Space between grid items */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
 }
 
 .resource-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  cursor: pointer;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  padding: 10px;
+  background-color: #fff;
+  transition: box-shadow 0.3s ease;
 }
 
 .resource-card:hover {
-  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .resource-thumbnail {
-  width: 100%; /* Full width for thumbnails */
-  height: 150px; /* Fixed height for uniformity */
-  overflow: hidden; /* Hide overflow */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f8f8f8; /* Background for empty spaces */
-}
-
-.pdf-preview {
-  width: 100%;
-  height: 100%; /* Fill the parent container */
-}
-
-canvas {
-  max-width: 100%; /* Ensure canvas does not exceed width */
-  height: auto; /* Maintain aspect ratio */
+  height: 150px;
+  overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .resource-details {
-  padding: 10px;
+  font-size: 14px;
 }
 
-.resource-details h4 {
-  margin: 0 0 5px;
-  font-size: 1.1em;
-  font-weight: bold;
-}
-
-.resource-details p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #555;
-}
-
-.open-resource-btn {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
+.filter-bar {
+  padding: 8px;
   border-radius: 4px;
-  cursor: pointer;
+  border: 1px solid #ccc;
+}
+.resources-body {
+  display: flex;
 }
 
-.open-resource-btn:hover {
-  background-color: #0056b3; /* Darker shade on hover */
+.resources-content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 250px; /* Adjust this to the exact width of your Navbar */
+  overflow-y: auto;
+}
+/* Add this for the backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 999; /* Make sure it's above other elements */
 }
 
-/* Modal Styles */
+/* Modify the blur effect */
+.blur {
+  filter: blur(5px); /* Adjust the blur intensity as needed */
+}
+/* Backdrop for the modal */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 999; /* Make sure it's above other elements */
+}
+
+/* Blur effect for the background */
+.blur {
+  filter: blur(5px); /* Adjust the blur intensity as needed */
+}
+
+/* Modal styles */
 .my-resources-modal {
   position: fixed;
   top: 50%;
@@ -129,28 +108,9 @@ canvas {
   transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  z-index: 1000; /* Ensure modal is on top */
-  max-width: 80%;
-  overflow-y: auto; /* Scroll if content is too long */
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 900; /* Below modal */
-}
-
-.close-modal {
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000; /* Above the backdrop */
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
 }
