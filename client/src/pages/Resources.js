@@ -1,34 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  browseResources,
-  fetchUserResources,
-  fetchAllTags,
-} from "../api/apiServices";
+import { browseResources, fetchAllTags } from "../api/apiServices";
 import { useSelector } from "react-redux";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import { useNavigate } from "react-router-dom";
 import "./Resources.css";
 import Header from "../components/Header";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Resources = () => {
   const [resources, setResources] = useState([]);
   const [filteredResources, setFilteredResources] = useState([]);
-  const [userResources, setUserResources] = useState([]);
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showMyResources, setShowMyResources] = useState(false);
 
   const token = localStorage.getItem("accessToken");
   const canvasRefs = useRef([]);
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("");
-  const [accessLevel] = useState("public");
-
-  // New state to manage selected type filter (department, course, etc.)
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const userProfile = useSelector((state) => state.user.profile);
 
@@ -76,9 +67,10 @@ const Resources = () => {
         );
       }
 
-      if (category) {
-        updatedResources = updatedResources.filter((resource) =>
-          resource.tags.includes(category)
+      if (selectedTags.length > 0) {
+        updatedResources = updatedResources.filter(
+          (resource) =>
+            selectedTags.some((tagId) => resource.tags.includes(tagId)) // Check if any selected tag is in resource.tags
         );
       }
 
@@ -86,7 +78,7 @@ const Resources = () => {
     };
 
     filterResourcesLocally();
-  }, [query, category, resources]);
+  }, [query, selectedTags, resources]);
 
   const renderPDF = async (fileUrl, index) => {
     const loadingTask = pdfjsLib.getDocument(fileUrl);
@@ -113,65 +105,38 @@ const Resources = () => {
     }
   };
 
-  const renderUserResources = () => {
-    return (
-      <div className="my-resources-modal">
-        <div className="modal-content">
-          <button onClick={() => setShowMyResources(false)}>&times;</button>
-          <h2>My Resources</h2>
-          <div className="resources-view grid">
-            {userResources.length > 0 ? (
-              userResources.map((resource, index) => (
-                <div
-                  key={resource._id}
-                  className="resource-card"
-                  onClick={() =>
-                    navigate(`/resources/view/${resource._id}`, {
-                      replace: true,
-                    })
-                  }
-                >
-                  <div className="resource-thumbnail">
-                    {resource.fileUrl.endsWith(".pdf") ? (
-                      <canvas
-                        ref={(el) => (canvasRefs.current[index] = el)}
-                      ></canvas>
-                    ) : (
-                      <img src={resource.fileUrl} alt={resource.fileName} />
-                    )}
-                  </div>
-                  <div className="resource-details">
-                    <h4>{resource.fileName}</h4>
-                    <p>{resource.description}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div>No resources found</div>
-            )}
-          </div>
-        </div>
-      </div>
+  const handleTagToggle = (tag) => {
+    console.log("Tag clicked:", tag);
+    setSelectedTags(
+      (prevSelected) =>
+        prevSelected.includes(tag._id) // Check against tag._id
+          ? prevSelected.filter((selectedTag) => selectedTag !== tag._id)
+          : [...prevSelected, tag._id] // Add tag._id to the array
     );
   };
 
-  const handleTypeChange = (e) => {
-    setSelectedType(e.target.value);
-    setCategory(""); // Reset category when type changes
-  };
+  const renderPillTags = () => (
+    <div className="selected-tags">
+      {selectedTags.map((tagId) => {
+        const tag = tags.find((t) => t._id === tagId);
+        return (
+          tag && (
+            <div
+              key={tag._id}
+              className="tag-pill"
+              onClick={() => handleTagToggle(tag)}
+            >
+              {tag.name} &times;
+            </div>
+          )
+        );
+      })}
+    </div>
+  );
 
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
+  const handleBackToDashboard = () => {
+    navigate("/dashboard"); // Navigate back to the dashboard
   };
-
-  const groupedTagsByType = tags.reduce((acc, tag) => {
-    const { type } = tag;
-    if (!acc[type]) {
-      acc[type] = [];
-    }
-    acc[type].push(tag);
-    return acc;
-  }, {});
 
   if (loading) return <div>Loading resources...</div>;
   if (error) return <div>{error}</div>;
@@ -179,7 +144,13 @@ const Resources = () => {
   return (
     <div className="resources-container">
       <Header userProfile={userProfile} />
+
+      <div className="back-button" onClick={handleBackToDashboard}>
+        <FaArrowLeft />
+      </div>
+
       <h2>Browse Resources</h2>
+
       <div className="search-filter-container">
         <input
           type="text"
@@ -189,43 +160,22 @@ const Resources = () => {
           className="search-bar"
         />
 
-        {/* Dropdown for selecting tag type */}
-        <select
-          value={selectedType}
-          onChange={handleTypeChange}
-          className="filter-bar"
-        >
-          <option value="">Select Type</option>
-          <option value="department">Department</option>
-          <option value="course">Course</option>
-          <option value="branch">Branch</option>
-          <option value="subject">Subject</option>
-        </select>
-
-        {/* Dropdown for selecting tag under the selected type */}
-        <select
-          value={category}
-          onChange={handleCategoryChange}
-          className="filter-bar"
-        >
-          <option value="">All Categories</option>
-          {groupedTagsByType[selectedType] &&
-            groupedTagsByType[selectedType].map((tag) => (
-              <option key={tag._id} value={tag._id}>
-                {tag.name}
-              </option>
-            ))}
-        </select>
+        <div className="tags-container">
+          {tags.map((tag) => (
+            <div
+              key={tag._id}
+              className={`tag ${
+                selectedTags.includes(tag._id) ? "selected" : ""
+              }`}
+              onClick={() => handleTagToggle(tag)}
+            >
+              {tag.name}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="upload-resource">
-        <button
-          onClick={() => navigate("/resources/upload")}
-          className="upload-button"
-        >
-          Upload Resource
-        </button>
-      </div>
+      {renderPillTags()}
 
       <div className="resources-view grid">
         {filteredResources.length > 0 ? (
@@ -254,8 +204,6 @@ const Resources = () => {
           <div>No resources found</div>
         )}
       </div>
-
-      {showMyResources && renderUserResources()}
     </div>
   );
 };

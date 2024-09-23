@@ -1,41 +1,71 @@
-/* ViewResource.css */
-
 .view-resource-container {
+  display: flex;
   padding: 20px;
-  max-width: 800px;
-  margin: auto;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
+  font-family: "Arial", sans-serif;
+}
+
+.resource-preview {
+  flex: 2;
+  margin-right: 20px;
+  position: relative;
+}
+
+.pdf-preview {
+  border: 1px solid #ccc;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
 }
 
-.resource-post {
-  background-color: white;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+.pdf-preview canvas {
+  display: block;
+  width: 100%;
 }
 
-.resource-post h2 {
-  margin: 0 0 10px;
-  color: #333;
-}
-
-.resource-post p {
-  color: #666;
-}
-
-.pdf-preview,
-.image-preview {
-  margin: 10px 0;
-}
-
-.image-preview img {
-  max-width: 100%;
-  height: auto;
+.open-new-tab {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
   border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  visibility: hidden; /* Hidden by default */
+  transition: visibility 0.2s ease-in-out;
+}
+
+.pdf-preview:hover .open-new-tab {
+  visibility: visible; /* Show on hover */
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.pagination button {
+  margin: 0 10px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+}
+
+.resource-details {
+  flex: 3;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
 .resource-tags {
@@ -43,28 +73,12 @@
 }
 
 .resource-actions {
-  margin: 15px 0;
-}
-
-.resource-actions button {
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.resource-actions button:hover {
-  background-color: #0056b3;
+  display: flex;
+  gap: 10px;
 }
 
 .comments-section {
-  background-color: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
 .comments-list {
@@ -73,40 +87,225 @@
 }
 
 .comment-item {
-  margin: 10px 0;
+  background-color: #f1f1f1;
+  margin: 5px 0;
   padding: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-.comment-content {
-  color: #333;
+  border-radius: 5px;
 }
 
 .comment-form {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
 }
 
 .comment-form textarea {
+  margin-top: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
   border-radius: 5px;
+  border: 1px solid #ccc;
   resize: none;
-  height: 50px;
-  margin-bottom: 10px;
 }
 
 .comment-form button {
-  padding: 8px 12px;
+  margin-top: 5px;
+  padding: 10px;
+  border: none;
   background-color: #28a745;
   color: white;
-  border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .comment-form button:hover {
   background-color: #218838;
+}
+.view-resource-container {
+  display: flex;
+  margin: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.resource-post {
+  flex: 3;
+  padding: 20px;
+}
+
+.pdf-preview {
+  position: relative;
+}
+
+canvas {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.pagination {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.caret {
+  cursor: pointer;
+  font-size: 24px;
+  margin: 0 10px;
+}
+
+.resource-tags {
+  margin: 15px 0;
+}
+
+.resource-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.open-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.like-icon {
+  font-size: 24px;
+  color: #ff4d4d;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+.comments-section {
+  flex: 2;
+  padding: 20px;
+  border-left: 1px solid #ddd;
+}
+
+.comments-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment-item {
+  margin-bottom: 10px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-form textarea {
+  resize: none;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+.view-resource-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.back-button {
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #007bff;
+}
+
+.resource-details {
+  flex: 1;
+  margin-right: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.pdf-preview {
+  position: relative;
+}
+
+.canvas {
+  max-width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.pagination-arrow {
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.open-in-new-tab {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.pdf-preview:hover .open-in-new-tab {
+  opacity: 1;
+}
+
+.comments-section {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.comment-item {
+  margin-bottom: 10px;
+}
+
+.comment-form {
+  margin-top: 20px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.like-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #ff4081;
+}
+
+.resource-tags {
+  margin-top: 20px;
 }

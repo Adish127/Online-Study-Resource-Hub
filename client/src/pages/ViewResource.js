@@ -1,22 +1,31 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   fetchResourceDetails,
   fetchCommentsForResource,
   addCommentToResource,
-} from "../api/apiServices"; // Ensure these functions are imported
+} from "../api/apiServices";
 import * as pdfjsLib from "pdfjs-dist/webpack";
+import {
+  FaHeart,
+  FaArrowLeft,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import "./ViewResource.css";
 
 const ViewResource = () => {
   const { resourceId } = useParams();
+  const navigate = useNavigate();
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const canvasRef = useRef(null);
-  const token = localStorage.getItem("accessToken"); // Assuming you store the token in localStorage
+  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchResource = async () => {
@@ -25,10 +34,9 @@ const ViewResource = () => {
         setResource(data);
         await fetchComments();
         setLoading(false);
-
-        if (data.fileUrl.endsWith(".pdf")) {
-          renderPDF(data.fileUrl);
-        }
+        setTotalPages(
+          data.fileUrl.endsWith(".pdf") ? await getTotalPages(data.fileUrl) : 0
+        );
       } catch (err) {
         console.error(err);
         setError("Failed to load resource details.");
@@ -49,11 +57,17 @@ const ViewResource = () => {
     fetchResource();
   }, [resourceId, token]);
 
+  const getTotalPages = async (fileUrl) => {
+    const loadingTask = pdfjsLib.getDocument(fileUrl);
+    const pdf = await loadingTask.promise;
+    return pdf.numPages;
+  };
+
   const renderPDF = async (fileUrl) => {
     const loadingTask = pdfjsLib.getDocument(fileUrl);
     try {
       const pdf = await loadingTask.promise;
-      const page = await pdf.getPage(1);
+      const page = await pdf.getPage(pageNumber);
       const scale = 1.5;
       const viewport = page.getViewport({ scale });
       const canvas = canvasRef.current;
@@ -81,11 +95,29 @@ const ViewResource = () => {
           ...prevComments,
           { text: newComment, user: { id: "currentUser" } },
         ]);
-        setNewComment(""); // Clear input field
+        setNewComment("");
       } catch (err) {
         console.error(err);
         setError("Failed to add comment.");
       }
+    }
+  };
+
+  const handleLike = () => {
+    // Handle the like functionality here
+  };
+
+  const handlePreviousPage = () => {
+    if (pageNumber > 1) {
+      setPageNumber(pageNumber - 1);
+      renderPDF(resource.fileUrl);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pageNumber < totalPages) {
+      setPageNumber(pageNumber + 1);
+      renderPDF(resource.fileUrl);
     }
   };
 
@@ -94,13 +126,36 @@ const ViewResource = () => {
 
   return (
     <div className="view-resource-container">
-      <div className="resource-post">
+      <div className="back-button" onClick={() => navigate(-1)}>
+        <FaArrowLeft />
+      </div>
+
+      <div className="resource-details">
         <h2>{resource.fileName}</h2>
         <p>{resource.description}</p>
 
         {resource.fileUrl.endsWith(".pdf") ? (
           <div className="pdf-preview">
             <canvas ref={canvasRef}></canvas>
+            <div className="pagination-controls">
+              <FaChevronLeft
+                onClick={handlePreviousPage}
+                className="pagination-arrow"
+              />
+              <span>
+                {pageNumber} / {totalPages}
+              </span>
+              <FaChevronRight
+                onClick={handleNextPage}
+                className="pagination-arrow"
+              />
+            </div>
+            <div
+              className="open-in-new-tab"
+              onClick={() => window.open(resource.fileUrl, "_blank")}
+            >
+              Open in New Tab
+            </div>
           </div>
         ) : (
           <div className="image-preview">
@@ -114,9 +169,7 @@ const ViewResource = () => {
         </div>
 
         <div className="resource-actions">
-          <button onClick={() => window.open(resource.fileUrl, "_blank")}>
-            Open Resource in New Tab
-          </button>
+          <FaHeart onClick={handleLike} className="like-icon" />
         </div>
       </div>
 
