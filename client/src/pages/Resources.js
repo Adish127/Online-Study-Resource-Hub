@@ -9,7 +9,6 @@ import * as pdfjsLib from "pdfjs-dist/webpack";
 import { useNavigate } from "react-router-dom";
 import "./Resources.css";
 import Header from "../components/Header";
-import UploadResource from "../pages/UploadResource"; // Import the upload modal
 
 const Resources = () => {
   const [resources, setResources] = useState([]);
@@ -19,7 +18,6 @@ const Resources = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showMyResources, setShowMyResources] = useState(false);
-  const [isUploadResourceOpen, setIsUploadResourceOpen] = useState(false); // State to handle modal visibility
 
   const token = localStorage.getItem("accessToken");
   const canvasRefs = useRef([]);
@@ -29,6 +27,7 @@ const Resources = () => {
   const [category, setCategory] = useState("");
   const [accessLevel] = useState("public");
 
+  // New state to manage selected type filter (department, course, etc.)
   const [selectedType, setSelectedType] = useState("");
 
   const userProfile = useSelector((state) => state.user.profile);
@@ -116,12 +115,8 @@ const Resources = () => {
 
   const renderUserResources = () => {
     return (
-      <>
-        <div
-          className="backdrop"
-          onClick={() => setShowMyResources(false)}
-        ></div>
-        <div className="my-resources-modal">
+      <div className="my-resources-modal">
+        <div className="modal-content">
           <button onClick={() => setShowMyResources(false)}>&times;</button>
           <h2>My Resources</h2>
           <div className="resources-view grid">
@@ -156,7 +151,7 @@ const Resources = () => {
             )}
           </div>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -178,21 +173,11 @@ const Resources = () => {
     return acc;
   }, {});
 
-  const openUploadResource = () => {
-    setIsUploadResourceOpen(true);
-  };
-
-  const closeUploadResource = () => {
-    setIsUploadResourceOpen(false);
-  };
-
   if (loading) return <div>Loading resources...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div
-      className={`resources-container ${isUploadResourceOpen ? "blur" : ""}`}
-    >
+    <div className="resources-container">
       <Header userProfile={userProfile} />
       <h2>Browse Resources</h2>
       <div className="search-filter-container">
@@ -234,7 +219,10 @@ const Resources = () => {
       </div>
 
       <div className="upload-resource">
-        <button onClick={openUploadResource} className="upload-button">
+        <button
+          onClick={() => navigate("/resources/upload")}
+          className="upload-button"
+        >
           Upload Resource
         </button>
       </div>
@@ -268,8 +256,6 @@ const Resources = () => {
       </div>
 
       {showMyResources && renderUserResources()}
-
-      {isUploadResourceOpen && <UploadResource onClose={closeUploadResource} />}
     </div>
   );
 };

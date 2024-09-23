@@ -30,6 +30,16 @@ const Navbar = () => {
         </Link>
 
         <Link
+          to="/my-uploads"
+          className={`nav-link ${
+            location.pathname === "/my-uploads" ? "active" : ""
+          }`}
+        >
+          <FaBook className="nav-icon" />
+          <span>My Uploads</span>
+        </Link>
+
+        <Link
           to="/recent-activities"
           className={`nav-link ${
             location.pathname === "/recent-activities" ? "active" : ""
