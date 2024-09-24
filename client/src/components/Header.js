@@ -35,7 +35,7 @@ const Header = ({ userProfile, notifications, onLogout }) => {
           <FaBell className="notification-icon" onClick={toggleNotifications} />
           {showNotifications && (
             <div className="notification-popup">
-              {notifications.length > 0 ? (
+            {notifications && notifications.length > 0 ? (
                 notifications.map((notification, index) => (
                   <div key={index} className="notification-item">
                     {notification}
