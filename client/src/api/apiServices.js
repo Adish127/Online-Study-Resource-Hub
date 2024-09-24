@@ -99,6 +99,7 @@ const fetchUserResources = async (token) => {
   return apiRequest(API_ENDPOINTS.RESOURCES.MY_RESOURCES, "GET", token);
 };
 
+// Browse resources
 const browseResources = async (token) => {
   return apiRequest(API_ENDPOINTS.RESOURCES.BROWSE, "GET", token);
 };
@@ -108,12 +109,22 @@ const fetchAllTags = async (token) => {
   return apiRequest(API_ENDPOINTS.TAGS.BROWSE, "GET", token);
 };
 
-// Delete a comment by its ID
-const deleteComment = async (token, commentId) => {
+// Delete a resource by its ID
+const deleteResource = async (token, resourceId) => {
   return apiRequest(
-    `${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`,
+    `${API_ENDPOINTS.RESOURCES.DELETE}/${resourceId}`,
     "DELETE",
     token
+  );
+};
+
+// Edit a resource by its ID
+const editResource = async (token, resourceId, updatedData) => {
+  return apiRequest(
+    `${API_ENDPOINTS.RESOURCES.EDIT}/${resourceId}`,
+    "PUT",
+    token,
+    updatedData
   );
 };
 
@@ -128,8 +139,8 @@ const searchAndFilterResources = async (token, filterParams) => {
   );
 };
 
+// Fetch resource details by its ID
 const fetchResourceDetails = async (token, id) => {
-  console.log(API_ENDPOINTS.RESOURCES.VIEW(id));
   return apiRequest(`${API_ENDPOINTS.RESOURCES.VIEW(id)}`, "GET", token);
 };
 
@@ -152,7 +163,17 @@ const addCommentToResource = async (token, resourceId, commentText) => {
     body
   );
 };
-// Export the new function
+
+// Delete a comment by its ID
+const deleteComment = async (token, commentId) => {
+  return apiRequest(
+    `${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`,
+    "DELETE",
+    token
+  );
+};
+
+// Export the functions
 export {
   fetchUserProfile,
   completeProfile,
@@ -162,9 +183,11 @@ export {
   fetchUserResources,
   browseResources,
   fetchAllTags,
-  searchAndFilterResources, // Added here
+  searchAndFilterResources,
   addCommentToResource,
   deleteComment,
   fetchResourceDetails,
   fetchCommentsForResource,
+  deleteResource, // Add delete resource function
+  editResource, // Add edit resource function
 };
