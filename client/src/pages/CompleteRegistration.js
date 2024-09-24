@@ -6,6 +6,7 @@ import {
   completeProfile,
   updateProfilePicture,
   fetchUserProfile,
+  fetchAllTags,
 } from "../api/apiServices";
 import { setPopup } from "../features/popupsSlice";
 import Header from "../components/Header";
@@ -28,6 +29,8 @@ const CompleteRegistration = () => {
   const [dragging, setDragging] = useState(false);
   const [loading, setLoadingState] = useState(false);
   const [error, setErrorState] = useState(null);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -57,12 +60,38 @@ const CompleteRegistration = () => {
       });
   }, [dispatch, navigate]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    fetchAllTags(token)
+      .then((tags) => {
+        const subjectTags = tags.filter((tag) => tag.type === "subject");
+        setAvailableTags(subjectTags);
+      })
+      .catch((err) => {
+        setErrorState("Failed to fetch tags.");
+      });
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfileData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const addInterest = (interest) => {
+    if (!profileData.interests.includes(interest)) {
+      setProfileData((prevData) => ({
+        ...prevData,
+        interests: [...prevData.interests, interest],
+      }));
+      setSearchTerm(""); // Clear the search input after adding
+    }
   };
 
   const handleDrop = (e) => {
@@ -144,12 +173,15 @@ const CompleteRegistration = () => {
     }
   };
 
+  const filteredTags = availableTags.filter(
+    (tag) =>
+      tag.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !profileData.interests.includes(tag.name) // Exclude already selected tags
+  );
   return (
     <div className="complete-registration-container">
       <Header userProfile={userProfile} />
       <div className="complete-registration-main">
-        <Navbar />
-
         <div className="complete-registration-content">
           {loading && (
             <div className="loading-overlay">
@@ -158,9 +190,6 @@ const CompleteRegistration = () => {
           )}
           <h1>Complete Your Profile</h1>
           <div className="profile-photo-section">
-            <div className="profile-photo-upload-text">
-              Drag and drop or click to upload
-            </div>
             <div
               className={`profile-photo-dropzone ${dragging ? "dragging" : ""}`}
               onDrop={handleDrop}
@@ -230,20 +259,47 @@ const CompleteRegistration = () => {
               </div>
               <div className="form-col">
                 <label>Interests:</label>
+                <div className="interests-tags-container">
+                  {profileData.interests.map((interest, index) => (
+                    <div key={index} className={`interest-tag`}>
+                      {interest}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setProfileData((prevData) => ({
+                            ...prevData,
+                            interests: prevData.interests.filter(
+                              (i) => i !== interest
+                            ),
+                          }))
+                        }
+                        className="remove-tag-button"
+                      >
+                        x
+                      </button>
+                    </div>
+                  ))}
+                </div>
                 <input
                   type="text"
-                  name="interests"
-                  value={profileData.interests.join(", ")}
-                  onChange={(e) =>
-                    setProfileData({
-                      ...profileData,
-                      interests: e.target.value
-                        .split(",")
-                        .map((item) => item.trim()),
-                    })
-                  }
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                   className="text-input-modern"
+                  placeholder="Search interests..."
                 />
+                {searchTerm && (
+                  <div className="tag-suggestions">
+                    {filteredTags.map((tag) => (
+                      <div
+                        key={tag.id}
+                        className="tag-suggestion"
+                        onClick={() => addInterest(tag.name)}
+                      >
+                        {tag.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             {error && <p className="error-message-modern">{error}</p>}
