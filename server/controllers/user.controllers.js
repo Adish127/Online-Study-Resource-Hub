@@ -4,6 +4,7 @@ import { uploadProfilePicturesToCloudinary } from "../utils/cloudinary.js";
 import cloudinary from "../config/cloudinary.js";
 
 // Controllers for user profile management, not by admin
+
 // Get user profile
 const getUserProfile = async (req, res) => {
   try {
@@ -23,6 +24,8 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     console.log({ body: req.body });
+
+    // Add new fields to the allowed updates array
     const allowedUpdates = [
       "username",
       "password",
@@ -30,41 +33,46 @@ const updateUserProfile = async (req, res) => {
       "department",
       "interests",
       "bio",
+      "gender", // New field
+      "dob", // New field
+      "alternateEmail", // New field
+      "degree", // New field
+      "batch", // New field
     ];
 
     const updateFields = {};
 
+    // Capture the fields to be updated
     allowedUpdates.forEach((field) => {
       if (req.body[field]) {
         updateFields[field] = req.body[field];
       }
     });
 
+    // Hash the password if it's being updated
     if (updateFields.password) {
       updateFields.password = await bcryptjs.hash(updateFields.password, 10);
     }
 
+    // Find and update the user by ID
     const updatedProfile = await User.findByIdAndUpdate(
       req.user.id,
       updateFields,
       { new: true }
     );
-    // console.log({ updatedProfile });
 
     if (!updatedProfile) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Donot select password
-    // updatedProfile.password = undefined;
-
-    res.status(200).json({ message: "Profile updated" });
+    res.status(200).json({ message: "Profile updated", updatedProfile });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 // Controllers for user management, by admin
+
 // Get all users
 const getUsers = async (req, res) => {
   try {
@@ -89,9 +97,10 @@ const getUserById = async (req, res) => {
   }
 };
 
-// Update user by ID
+// Update user by ID (Admin Route)
 const updateUser = async (req, res) => {
   try {
+    // Add new fields to the allowed updates array
     const allowedUpdates = [
       "username",
       "password",
@@ -103,22 +112,28 @@ const updateUser = async (req, res) => {
       "uploadedResources",
       "studyGroups",
       "notifications",
+      "gender", // New field
+      "dob", // New field
+      "alternateEmail", // New field
+      "degree", // New field
+      "batch", // New field
     ];
 
     const updateFields = {};
 
+    // Capture the fields to be updated
     allowedUpdates.forEach((field) => {
       if (req.body[field]) {
         updateFields[field] = req.body[field];
       }
     });
 
+    // Hash the password if it's being updated
     if (updateFields.password) {
       updateFields.password = await bcryptjs.hash(updateFields.password, 10);
     }
 
-    // console.log(updateFields);
-
+    // Find and update the user by ID
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       updateFields,
@@ -129,7 +144,7 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ message: "User updated" });
+    res.status(200).json({ message: "User updated", updatedUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -153,26 +168,21 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// New route for profile updation, using multer and cloudinary
+// Update user profile picture
 const updateUserProfilePic = async (req, res) => {
   try {
     // Find the user by ID
-    // console.log(req.user);
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Ensure that a file is uploaded
-    // console.log(req.file);
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // console.log(req.file);
-
     // Upload the file to Cloudinary
-    // console.log(req.file);
     const result = await uploadProfilePicturesToCloudinary(
       req,
       req.file.buffer
@@ -180,7 +190,6 @@ const updateUserProfilePic = async (req, res) => {
 
     // Update the user's profile picture URL
     user.profilePicture = result.secure_url;
-    // console.log(user.profilePicture);
     user.profilePictureUploadId = result.public_id;
     await user.save();
 

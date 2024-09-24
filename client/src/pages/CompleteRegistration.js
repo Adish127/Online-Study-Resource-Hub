@@ -24,6 +24,11 @@ const CompleteRegistration = () => {
     department: "",
     bio: "",
     interests: [],
+    gender: "",
+    dob: "",
+    alternateEmail: "",
+    degree: "",
+    batch: "",
   });
   const [profilePicture, setProfilePicture] = useState("");
   const [dragging, setDragging] = useState(false);
@@ -49,6 +54,11 @@ const CompleteRegistration = () => {
           department: response.department || "",
           bio: response.bio || "",
           interests: response.interests || [],
+          gender: response.bio?.gender || "", // Add gender
+          dob: response.bio?.dob || "", // Add dob
+          alternateEmail: response.bio?.alternateEmail || "", // Add alternateEmail
+          degree: response.bio?.degree || "", // Add degree
+          batch: response.bio?.batch || "", // Add batch
         });
         setProfilePicture(response.profilePicture || "");
         dispatch(setLoading("succeeded"));
@@ -178,6 +188,7 @@ const CompleteRegistration = () => {
       tag.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       !profileData.interests.includes(tag.name) // Exclude already selected tags
   );
+
   return (
     <div className="complete-registration-container">
       <Header userProfile={userProfile} />
@@ -257,60 +268,100 @@ const CompleteRegistration = () => {
                   className="textarea-input-modern"
                 />
               </div>
+            </div>
+            <div className="form-row">
+              <div className="form-col">
+                <label>Gender:</label>
+                <select
+                  name="gender"
+                  value={profileData.gender}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="form-col">
+                <label>Date of Birth:</label>
+                <input
+                  type="date"
+                  name="dob"
+                  value={profileData.dob}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-col">
+                <label>Alternate Email:</label>
+                <input
+                  type="email"
+                  name="alternateEmail"
+                  value={profileData.alternateEmail}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                />
+              </div>
+              <div className="form-col">
+                <label>Degree:</label>
+                <input
+                  type="text"
+                  name="degree"
+                  value={profileData.degree}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-col">
+                <label>Batch:</label>
+                <input
+                  type="text"
+                  name="batch"
+                  value={profileData.batch}
+                  onChange={handleInputChange}
+                  className="text-input-modern"
+                />
+              </div>
+            </div>
+            <div className="form-row">
               <div className="form-col">
                 <label>Interests:</label>
-                <div className="interests-tags-container">
-                  {profileData.interests.map((interest, index) => (
-                    <div key={index} className={`interest-tag`}>
-                      {interest}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setProfileData((prevData) => ({
-                            ...prevData,
-                            interests: prevData.interests.filter(
-                              (i) => i !== interest
-                            ),
-                          }))
-                        }
-                        className="remove-tag-button"
-                      >
-                        x
-                      </button>
-                    </div>
-                  ))}
-                </div>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={handleSearchChange}
                   className="text-input-modern"
-                  placeholder="Search interests..."
+                  placeholder="Search and add interests"
                 />
-                {searchTerm && (
-                  <div className="tag-suggestions">
-                    {filteredTags.map((tag) => (
-                      <div
-                        key={tag.id}
-                        className="tag-suggestion"
-                        onClick={() => addInterest(tag.name)}
-                      >
-                        {tag.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="available-tags">
+                  {filteredTags.map((tag) => (
+                    <div
+                      key={tag.id}
+                      className="tag-item"
+                      onClick={() => addInterest(tag.name)}
+                    >
+                      {tag.name}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-            {error && <p className="error-message-modern">{error}</p>}
-            <button
-              type="button"
-              onClick={handleSaveProfile}
-              className="save-button-modern"
-              disabled={loading}
-            >
-              Save Profile
-            </button>
+            <div className="form-row">
+              <button
+                type="button"
+                onClick={handleSaveProfile}
+                className="save-button-modern"
+              >
+                Save Profile
+              </button>
+            </div>
+            {error && <div className="error-message">{error}</div>}
           </form>
         </div>
       </div>

@@ -1,42 +1,57 @@
-.modal-overlay {
+.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  z-index: 1000; /* Ensure it appears above other content */
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.popup-box {
+  background: white; /* White background for the popup */
+  padding: 20px; /* Padding around content */
+  border-radius: 8px; /* Rounded corners */
+  width: 400px; /* Fixed width */
+  max-width: 100%; /* Responsive design */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+.popup-box h2 {
+  margin-top: 0; /* Remove margin on top of the heading */
 }
 
-.modal-actions button {
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
+.popup-box label {
+  display: block; /* Each label on a new line */
+  margin-bottom: 5px; /* Space between label and input */
 }
 
-.modal-actions button:first-child {
-  background-color: #28a745;
-  color: white;
+.popup-box input[type="text"],
+.popup-box input[type="file"] {
+  width: 100%; /* Full width inputs */
+  padding: 10px; /* Padding inside inputs */
+  margin-bottom: 15px; /* Space below inputs */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Slightly rounded corners */
 }
 
-.modal-actions button:last-child {
-  background-color: #dc3545;
-  color: white;
+.popup-box button {
+  padding: 10px 15px; /* Button padding */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Slightly rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.popup-box button:first-of-type {
+  background-color: #28a745; /* Green background for Save Changes */
+  color: white; /* White text */
+}
+
+.popup-box button:last-of-type {
+  background-color: #dc3545; /* Red background for Cancel */
+  color: white; /* White text */
+  margin-left: 10px; /* Space between buttons */
 }

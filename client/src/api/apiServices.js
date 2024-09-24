@@ -145,7 +145,7 @@ const fetchAllTags = async (token) => {
 // Delete a resource by its ID
 const deleteResource = async (token, resourceId) => {
   return apiRequest(
-    `${API_ENDPOINTS.RESOURCES.DELETE}/${resourceId}`,
+    API_ENDPOINTS.RESOURCES.DELETE(resourceId),
     "DELETE",
     token
   );
@@ -154,7 +154,7 @@ const deleteResource = async (token, resourceId) => {
 // Edit a resource by its ID
 const editResource = async (token, resourceId, updatedData) => {
   return apiRequest(
-    `${API_ENDPOINTS.RESOURCES.EDIT}/${resourceId}`,
+    API_ENDPOINTS.RESOURCES.UPDATE(resourceId),
     "PUT",
     token,
     updatedData
