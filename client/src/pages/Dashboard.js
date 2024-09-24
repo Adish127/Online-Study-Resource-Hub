@@ -38,12 +38,8 @@ const Dashboard = () => {
 
       if (!token) {
         const urlParams = new URLSearchParams(window.location.search);
-
-        console.log(urlParams);
         const urlToken = urlParams.get("accessToken");
         const urlRefreshToken = urlParams.get("refreshToken");
-
-        console.log({ urlToken, urlRefreshToken });
 
         if (urlToken) {
           localStorage.setItem("accessToken", urlToken);
@@ -57,30 +53,30 @@ const Dashboard = () => {
         }
       }
 
+      // If no userProfile in Redux or status is idle, fetch the profile
       if (!userProfile && userStatus === "idle") {
         dispatch(setLoading("loading"));
         try {
           const response = await fetchUserProfile(token);
-          dispatch(setUserProfile(response));
+          dispatch(setUserProfile(response)); // Set profile data in Redux
           dispatch(setLoading("succeeded"));
-          setPopup({
-            visible: true,
-            message: `Welcome, ${response.name}!`,
-            type: "success",
-          });
+
+          // Fetch user resources as well
           const userResources = await fetchUserResources(token);
           dispatch(setResources(userResources));
+
+          // Show popup for welcome message
+          showPopup(`Welcome, ${response.name}!`, "success");
         } catch (err) {
+          // If token expired, handle token refresh logic
           if (err.message === "Token expired") {
-            // Token might be expired, try refreshing
             try {
-              // const refreshTok = userProfile?.refreshToken;
               const newTokens = await refreshAccessToken(refreshToken);
               localStorage.setItem("accessToken", newTokens.accessToken);
-              // localStorage.setItem("refreshToken", newTokens.refreshToken);
               const response = await fetchUserProfile(newTokens.accessToken);
               dispatch(setUserProfile(response));
               dispatch(setLoading("succeeded"));
+
               const userResources = await fetchUserResources(
                 newTokens.accessToken
               );

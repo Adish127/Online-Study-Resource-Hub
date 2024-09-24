@@ -49,6 +49,39 @@ const apiRequest = async (
   return jsonResponse;
 };
 
+// API service to log recent activity
+const logRecentActivity = async (token, activityData) => {
+  return apiRequest(
+    API_ENDPOINTS.RECENT_ACTIVITIES.LOG,
+    "POST",
+    token,
+    activityData
+  );
+};
+
+// API service to get all recent activities (admin only)
+const fetchAllRecentActivities = async (token) => {
+  return apiRequest(API_ENDPOINTS.RECENT_ACTIVITIES.GET_ALL, "GET", token);
+};
+
+// API service to get recent activities by user ID
+const fetchRecentActivitiesByUser = async (token, userId) => {
+  return apiRequest(
+    API_ENDPOINTS.RECENT_ACTIVITIES.GET_BY_USER(userId),
+    "GET",
+    token
+  );
+};
+
+// API service to get recent activities by action type (like, comment, etc.)
+const fetchRecentActivitiesByType = async (token, actionType) => {
+  return apiRequest(
+    API_ENDPOINTS.RECENT_ACTIVITIES.GET_BY_TYPE(actionType),
+    "GET",
+    token
+  );
+};
+
 // Fetch user profile
 const fetchUserProfile = async (token) => {
   return apiRequest(API_ENDPOINTS.USERS.PROFILE, "GET", token);
@@ -163,17 +196,7 @@ const addCommentToResource = async (token, resourceId, commentText) => {
     body
   );
 };
-
-// Delete a comment by its ID
-const deleteComment = async (token, commentId) => {
-  return apiRequest(
-    `${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`,
-    "DELETE",
-    token
-  );
-};
-
-// Export the functions
+// Export the new function
 export {
   fetchUserProfile,
   completeProfile,
@@ -188,6 +211,4 @@ export {
   deleteComment,
   fetchResourceDetails,
   fetchCommentsForResource,
-  deleteResource, // Add delete resource function
-  editResource, // Add edit resource function
 };

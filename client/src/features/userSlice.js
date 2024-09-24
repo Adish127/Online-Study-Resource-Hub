@@ -1,25 +1,28 @@
-// features/userSlice.js
+// src/features/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  profile: null, // Ensure the profile is null initially
+  status: "idle", // idle | loading | succeeded | failed
+  error: null,
+};
 
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    profile: null,
-    status: "idle", // You can keep this if you want to track status manually
-    error: null,
-  },
+  initialState,
   reducers: {
-    setUserProfile: (state, action) => {
+    setUserProfile(state, action) {
       state.profile = action.payload;
     },
-    setLoading: (state, action) => {
+    setLoading(state, action) {
       state.status = action.payload;
     },
-    setError: (state, action) => {
+    setError(state, action) {
       state.error = action.payload;
     },
   },
 });
 
 export const { setUserProfile, setLoading, setError } = userSlice.actions;
+
 export default userSlice.reducer;

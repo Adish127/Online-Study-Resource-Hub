@@ -47,6 +47,12 @@ const API_ENDPOINTS = {
     DISPLAY: (id) => `${BASE_URL}/v2/comments/${id}`,
     DELETE: (id) => `${BASE_URL}/v2/comments/delete/${id}`,
   },
+  RECENT_ACTIVITIES: {
+    LOG: `${BASE_URL}/v2/activities/log`,
+    GET_ALL: `${BASE_URL}/v2/activities/all`,
+    GET_BY_USER: (id) => `${BASE_URL}/v2/activities/user/${id}`,
+    GET_BY_TYPE: (type) => `${BASE_URL}/v2/activities/type/${type}`,
+  },
 };
 
 export default API_ENDPOINTS;
