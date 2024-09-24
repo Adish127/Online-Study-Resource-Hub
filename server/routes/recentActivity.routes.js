@@ -4,7 +4,7 @@ import {
   getAllRecentActivities,
   getRecentActivitiesByUser,
   getActivitiesByType,
-} from "../controllers/recentActivity.controllers";
+} from "../controllers/recentActivity.controllers.js";
 import { authenticateJWT, verifyAdmin } from "../middlewares/auth.js";
 
 const router = express.Router();

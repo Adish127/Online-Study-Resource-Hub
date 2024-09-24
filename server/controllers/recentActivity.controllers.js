@@ -1,6 +1,6 @@
 // Controllers to log all activities of user like
 // "login", "logout", "upload", "like", "comment", "view", "joinGroup", "updateProfile", "download"
-import RecentActivity from "../models/recentActivity.model";
+import RecentActivity from "../models/recentActivity.model.js";
 
 // Log recent activity
 const logActivity = async (req, res) => {
