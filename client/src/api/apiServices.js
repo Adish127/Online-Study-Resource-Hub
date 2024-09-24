@@ -208,7 +208,12 @@ export {
   fetchAllTags,
   searchAndFilterResources,
   addCommentToResource,
-  deleteComment,
   fetchResourceDetails,
   fetchCommentsForResource,
+  deleteResource,
+  editResource,
+  logRecentActivity,
+  fetchAllRecentActivities,
+  fetchRecentActivitiesByUser,
+  fetchRecentActivitiesByType,
 };

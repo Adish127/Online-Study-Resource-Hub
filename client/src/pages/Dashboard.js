@@ -142,9 +142,6 @@ const Dashboard = () => {
               alt="User Avatar"
               width="50%"
             />
-            <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
           </section>
 
           <section className="quick-stats">
