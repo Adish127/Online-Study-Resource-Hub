@@ -11,7 +11,7 @@ const MyUploads = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const canvasRefs = useRef([]);
+  const canvasRefs = useRef([]); // Array to hold refs for each resource's canvas
 
   // Get the user's authentication token
   const token = localStorage.getItem("accessToken");
@@ -42,10 +42,52 @@ const MyUploads = () => {
     }
   };
 
+  // Render PDF preview
+  const renderPDF = (fileUrl, index) => {
+    const loadingTask = pdfjsLib.getDocument(fileUrl);
+    loadingTask.promise.then(
+      (pdf) => {
+        pdf.getPage(1).then((page) => {
+          const scale = 1.5;
+          const viewport = page.getViewport({ scale });
+          const canvas = canvasRefs.current[index]; // Access the correct canvas using index
+          const context = canvas.getContext("2d");
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          page.render(renderContext).promise.then(() => {
+            console.log("Page rendered");
+          });
+        });
+      },
+      (reason) => {
+        console.error(reason);
+      }
+    );
+  };
+
   // UseEffect to load resources on component mount
   useEffect(() => {
     loadResources();
   }, [token]);
+
+  // UseEffect to render PDFs after resources have loaded
+  useEffect(() => {
+    resources.forEach((resource, index) => {
+      if (resource.fileUrl.endsWith(".pdf")) {
+        renderPDF(resource.fileUrl, index);
+      }
+    });
+  }, [resources]);
+
+  // Handle upload new resource button
+  const handleUploadResource = () => {
+    navigate("/resources/upload", { replace: true });
+  };
 
   if (loading) return <div>Loading resources...</div>;
   if (error) return <div>{error}</div>;
@@ -53,6 +95,12 @@ const MyUploads = () => {
   return (
     <div className="my-resources-container">
       <h2>My Resources</h2>
+      {/* Upload Resource Button */}
+      <button className="upload-resource-btn" onClick={handleUploadResource}>
+        Upload Resource
+      </button>
+
+      {/* View Toggle Buttons */}
       <div className="view-toggle">
         <button
           className={viewMode === "grid" ? "active" : ""}
@@ -67,12 +115,18 @@ const MyUploads = () => {
           List View
         </button>
       </div>
+
+      {/* Resource List/Grid */}
       <div className={`resources-view ${viewMode}`}>
         {resources.map((resource, index) => (
           <div key={resource._id} className="resource-card">
             <div className="resource-thumbnail">
               {resource.fileUrl.endsWith(".pdf") ? (
-                <canvas ref={(el) => (canvasRefs.current[index] = el)}></canvas>
+                <div className="pdf-preview">
+                  <canvas
+                    ref={(el) => (canvasRefs.current[index] = el)}
+                  ></canvas>
+                </div>
               ) : (
                 <img src={resource.fileUrl} alt={resource.fileName} />
               )}
@@ -80,6 +134,8 @@ const MyUploads = () => {
             <div className="resource-details">
               <h4>{resource.fileName}</h4>
               <p>{resource.description}</p>
+
+              {/* Action Buttons */}
               <div className="resource-actions">
                 <FaEdit
                   className="edit-icon"
@@ -92,6 +148,14 @@ const MyUploads = () => {
                   title="Delete Resource"
                 />
               </div>
+
+              {/* Open Resource Button */}
+              <button
+                className="open-resource-btn"
+                onClick={() => window.open(resource.fileUrl, "_blank")}
+              >
+                Open Resource
+              </button>
             </div>
           </div>
         ))}
