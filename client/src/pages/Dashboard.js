@@ -99,6 +99,7 @@ const Dashboard = () => {
   }, [dispatch, navigate, userProfile, userStatus]);
 
   useEffect(() => {
+    console.log(userProfile)
     if (userProfile && !userProfile.isProfileComplete) {
       navigate("/profile-completion");
     }
