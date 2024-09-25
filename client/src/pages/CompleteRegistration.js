@@ -202,6 +202,16 @@ const CompleteRegistration = () => {
       !profileData.interests.includes(tag.name) // Exclude already selected tags
   );
 
+  const removeInterest = (interestToRemove) => {
+    setProfileData((prevData) => ({
+      ...prevData,
+      interests: prevData.interests.filter(
+        (interest) => interest !== interestToRemove
+      ),
+    }));
+  };
+  
+
   return (
     <div className="complete-registration-container">
       <Header userProfile={userProfile} />
@@ -274,24 +284,31 @@ const CompleteRegistration = () => {
             <div className="form-row">
               <div className="form-col">
                 <label>Gender:</label>
-                <input
-                  type="text"
+                <select
                   name="gender"
                   value={profileData.bio.gender}
                   onChange={handleBioChange}
                   className="text-input-modern"
-                />
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
               <div className="form-col">
                 <label>Date of Birth:</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={profileData.bio.dob}
-                  onChange={handleBioChange}
-                  className="text-input-modern"
-                />
-              </div>
+                <div className="date-of-birth-container"> 
+                  <input
+                    type="date"
+                    name="dob"
+                    value={profileData.bio.dob}
+                    onChange={handleBioChange}
+                    className="text-input-modern date-input-modern" 
+                  />
+                </div>
+            </div>
+
             </div>
             <div className="form-row">
               <div className="form-col">
@@ -347,11 +364,16 @@ const CompleteRegistration = () => {
                 </ul>
                 <div className="selected-tags">
                   {profileData.interests.map((interest, index) => (
-                    <span key={index} className="selected-tag">
-                      {interest}
+                    <span
+                      key={index}
+                      className="selected-tag"
+                      onClick={() => removeInterest(interest)}
+                    >
+                      {interest} <span className="remove-tag">×</span> {/* Add close icon */}
                     </span>
                   ))}
                 </div>
+
               </div>
             </div>
             <div className="form-row">

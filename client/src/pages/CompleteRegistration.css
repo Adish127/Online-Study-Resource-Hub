@@ -437,3 +437,106 @@
 .tag-suggestion:hover {
   background-color: #f1f1f1;
 }
+/* CompleteRegistration.css */
+
+/* Styling for selected tags */
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.selected-tag {
+  background-color: #007bff; /* Primary color for tags */
+  color: white;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.selected-tag:hover {
+  background-color: #0056b3; /* Slightly darker on hover */
+}
+
+/* Tag suggestion list container */
+.tag-suggestion-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0 0;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Individual tag suggestion items */
+.tag-suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  color: #333;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tag-suggestion-item:hover {
+  background-color: #e6e6e6;
+}
+
+/* Input field */
+.text-input-modern {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Save button */
+.save-button-modern {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.save-button-modern:hover {
+  background-color: #0056b3;
+}
+
+/* New Date of Birth Container Style */
+.date-of-birth-container {
+  margin-bottom: 1rem; /* Space below the date of birth section */
+}
+
+/* Date Input Style */
+.date-input-modern {
+  width: 100%; /* Full width */
+  padding: 0.8rem; /* Comfortable padding */
+  font-size: 1rem; /* Font size */
+  border: 1px solid #ccc; /* Border color */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #f9f9f9; /* Light background */
+  transition: border-color 0.2s ease-in-out; /* Smooth border transition */
+}
+
+.date-input-modern:focus {
+  border-color: #0d6efd; /* Highlight border on focus */
+  background-color: #ffffff; /* Change background on focus */
+}
+
+/* Error message styling for the date input (if needed) */
+.error-message-date {
+  color: #dc3545; /* Red color for error messages */
+  font-size: 0.9rem; /* Font size */
+  margin-top: 0.5rem; /* Space above the error message */
+  text-align: center; /* Centered text */
+}

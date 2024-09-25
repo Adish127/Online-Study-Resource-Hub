@@ -1,6 +1,5 @@
 // src/store.js
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-
 import {
   persistStore,
   persistReducer,
@@ -11,14 +10,14 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Default: localStorage for web
+import storageSession from "redux-persist/lib/storage/session"; // Use sessionStorage
 import userReducer from "../features/userSlice";
 import resourceReducer from "../features/resourceSlice";
 
 const persistConfig = {
-  key: "root", // Key for the persisted storage in localStorage
-  storage, // Using localStorage
-  whitelist: ["resource"], // Persist both user and resource slices
+  key: "root", // Key for the persisted storage in sessionStorage
+  storage: storageSession, // Using sessionStorage instead of localStorage
+  whitelist: ["resource"], // Persist only resource slice
 };
 
 const rootReducer = combineReducers({

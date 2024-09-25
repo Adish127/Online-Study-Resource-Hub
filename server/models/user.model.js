@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
         enum: ["male", "female", "other"],
       },
       dob: {
-        type: Date,
+        type: String,
       },
       alternateEmail: {
         type: String,
@@ -78,9 +78,9 @@ const userSchema = new mongoose.Schema(
     ],
     interests: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tag",
-        // type: String,
+        // type: mongoose.Schema.Types.ObjectId,
+        // ref: "Tag",
+        type: String,
       },
     ],
   },

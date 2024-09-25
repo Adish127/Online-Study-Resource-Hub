@@ -137,14 +137,14 @@ const Dashboard = () => {
             <p>
               Here you can manage your resources, view study groups, and more.
             </p>
-            <img
+            {/* <img
               src={userProfile?.profilePicture}
               alt="User Avatar"
               width="50%"
-            />
+            /> */}
           </section>
 
-          <section className="quick-stats">
+          {/* <section className="quick-stats">
             <div className="stat-item">
               <h2>Resources</h2>
               <p>Manage your resources here.</p>
@@ -168,8 +168,7 @@ const Dashboard = () => {
 
           <section className="recent-activities">
             <h2>Recent Activities</h2>
-            {/* Feed of recent activities */}
-          </section>
+          </section> */}
         </main>
       </div>
 
