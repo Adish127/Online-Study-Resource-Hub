@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { resolvePath, useNavigate } from "react-router-dom";
 import { setUserProfile, setLoading, setError } from "../features/userSlice";
 import {
   completeProfile,
@@ -22,13 +22,14 @@ const CompleteRegistration = () => {
   const [profileData, setProfileData] = useState({
     name: "",
     department: "",
-    bio: "",
+    bio: {
+      gender: "",
+      dob: "",
+      alternateEmail: "",
+      degree: "",
+      batch: "",
+    },
     interests: [],
-    gender: "",
-    dob: "",
-    alternateEmail: "",
-    degree: "",
-    batch: "",
   });
   const [profilePicture, setProfilePicture] = useState("");
   const [dragging, setDragging] = useState(false);
@@ -52,13 +53,14 @@ const CompleteRegistration = () => {
         setProfileData({
           name: response.name || "",
           department: response.department || "",
-          bio: response.bio || "",
+          bio: {
+            gender: response.bio?.gender || "",
+            dob: response.bio?.dob || "",
+            alternateEmail: response.bio?.alternateEmail || "",
+            degree: response.bio?.degree || "",
+            batch: response.bio?.batch || "",
+          },
           interests: response.interests || [],
-          gender: response.bio?.gender || "", // Add gender
-          dob: response.bio?.dob || "", // Add dob
-          alternateEmail: response.bio?.alternateEmail || "", // Add alternateEmail
-          degree: response.bio?.degree || "", // Add degree
-          batch: response.bio?.batch || "", // Add batch
         });
         setProfilePicture(response.profilePicture || "");
         dispatch(setLoading("succeeded"));
@@ -87,6 +89,17 @@ const CompleteRegistration = () => {
     setProfileData((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+
+  const handleBioChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData((prevState) => ({
+      ...prevState,
+      bio: {
+        ...prevState.bio,
+        [name]: value,
+      },
     }));
   };
 
@@ -260,37 +273,22 @@ const CompleteRegistration = () => {
             </div>
             <div className="form-row">
               <div className="form-col">
-                <label>Bio:</label>
-                <textarea
-                  name="bio"
-                  value={profileData.bio}
-                  onChange={handleInputChange}
-                  className="textarea-input-modern"
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-col">
                 <label>Gender:</label>
-                <select
+                <input
+                  type="text"
                   name="gender"
-                  value={profileData.gender}
-                  onChange={handleInputChange}
+                  value={profileData.bio.gender}
+                  onChange={handleBioChange}
                   className="text-input-modern"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
+                />
               </div>
               <div className="form-col">
                 <label>Date of Birth:</label>
                 <input
                   type="date"
                   name="dob"
-                  value={profileData.dob}
-                  onChange={handleInputChange}
+                  value={profileData.bio.dob}
+                  onChange={handleBioChange}
                   className="text-input-modern"
                 />
               </div>
@@ -301,8 +299,8 @@ const CompleteRegistration = () => {
                 <input
                   type="email"
                   name="alternateEmail"
-                  value={profileData.alternateEmail}
-                  onChange={handleInputChange}
+                  value={profileData.bio.alternateEmail}
+                  onChange={handleBioChange}
                   className="text-input-modern"
                 />
               </div>
@@ -311,20 +309,18 @@ const CompleteRegistration = () => {
                 <input
                   type="text"
                   name="degree"
-                  value={profileData.degree}
-                  onChange={handleInputChange}
+                  value={profileData.bio.degree}
+                  onChange={handleBioChange}
                   className="text-input-modern"
                 />
               </div>
-            </div>
-            <div className="form-row">
               <div className="form-col">
                 <label>Batch:</label>
                 <input
                   type="text"
                   name="batch"
-                  value={profileData.batch}
-                  onChange={handleInputChange}
+                  value={profileData.bio.batch}
+                  onChange={handleBioChange}
                   className="text-input-modern"
                 />
               </div>
@@ -337,17 +333,23 @@ const CompleteRegistration = () => {
                   value={searchTerm}
                   onChange={handleSearchChange}
                   className="text-input-modern"
-                  placeholder="Search and add interests"
                 />
-                <div className="available-tags">
+                <ul className="tag-suggestion-list">
                   {filteredTags.map((tag) => (
-                    <div
+                    <li
                       key={tag.id}
-                      className="tag-item"
                       onClick={() => addInterest(tag.name)}
+                      className="tag-suggestion-item"
                     >
                       {tag.name}
-                    </div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="selected-tags">
+                  {profileData.interests.map((interest, index) => (
+                    <span key={index} className="selected-tag">
+                      {interest}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -355,13 +357,13 @@ const CompleteRegistration = () => {
             <div className="form-row">
               <button
                 type="button"
-                onClick={handleSaveProfile}
                 className="save-button-modern"
+                onClick={handleSaveProfile}
+                disabled={loading}
               >
                 Save Profile
               </button>
             </div>
-            {error && <div className="error-message">{error}</div>}
           </form>
         </div>
       </div>

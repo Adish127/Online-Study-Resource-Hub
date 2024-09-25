@@ -157,7 +157,8 @@ const editResource = async (token, resourceId, updatedData) => {
     API_ENDPOINTS.RESOURCES.UPDATE(resourceId),
     "PUT",
     token,
-    updatedData
+    updatedData,
+    true
   );
 };
 

@@ -121,7 +121,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Header userProfile={userProfile} />
+      <Header userProfile={userProfile} onLogout={handleLogout} />
 
       {/* Display Popup when there's a failure */}
       {popup.visible && (
